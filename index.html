@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>暑假複習計畫表 2025</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
+:root{
+  --ink:#1a1a2e;--bg:#f4f3ef;--card:#fff;
+  --c1:#e63946;--c2:#457b9d;--c3:#2a9d8f;--c4:#e9c46a;
+  --c5:#9b5de5;--c6:#f4a261;--c7:#06d6a0;
+  --muted:#6b7280;--border:#e5e7eb;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+.hero{background:var(--ink);color:#fff;padding:40px 20px 32px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(255,255,255,.03) 40px,rgba(255,255,255,.03) 41px);}
+.hero-badge{display:inline-block;background:var(--c1);color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;padding:3px 12px;border-radius:2px;margin-bottom:14px;}
+.hero h1{font-size:clamp(22px,4vw,38px);font-weight:900;line-height:1.2;letter-spacing:-1px;margin-bottom:8px;}
+.hero h1 span{color:var(--c4);}
+.hero p{color:rgba(255,255,255,.6);font-size:13px;margin-bottom:24px;}
+.hero-stats{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:var(--c4);}
+.stat-label{font-size:10px;color:rgba(255,255,255,.5);margin-top:2px;text-align:center;}
+.tabs-wrap{background:var(--ink);position:sticky;top:0;z-index:100;border-bottom:2px solid rgba(255,255,255,.1);}
+.tabs{display:flex;overflow-x:auto;padding:0 14px;max-width:1200px;margin:0 auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex-shrink:0;padding:11px 16px;font-size:12px;font-weight:500;color:rgba(255,255,255,.5);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab:hover{color:rgba(255,255,255,.85);}
+.tab.active{color:var(--c4);border-bottom-color:var(--c4);}
+.main{max-width:1200px;margin:0 auto;padding:28px 14px 60px;}
+.panel{display:none;}
+.panel.active{display:block;}
+.sec-title{font-size:19px;font-weight:900;margin-bottom:4px;letter-spacing:-.5px;}
+.sec-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.info-box{background:#eff6ff;border-left:4px solid var(--c2);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:12.5px;color:#1e40af;line-height:1.9;}
+.info-box strong{font-weight:700;}
+.warn-box{background:#fff7ed;border-left:4px solid var(--c6);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:12.5px;color:#92400e;line-height:1.9;}
+/* CHECKBOX */
+.task-cb{display:none;}
+.task-label{display:flex;align-items:flex-start;gap:7px;cursor:pointer;font-size:11.5px;line-height:1.55;width:100%;padding:4px 0;border-bottom:1px dashed var(--border);}
+.task-label:last-child{border-bottom:none;}
+.cb-box{flex-shrink:0;width:15px;height:15px;border:2px solid #d1d5db;border-radius:3px;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;background:#fff;}
+.task-cb:checked+.task-label .cb-box{background:var(--c3);border-color:var(--c3);}
+.task-cb:checked+.task-label .cb-box::after{content:'✓';color:#fff;font-size:9px;font-weight:900;}
+.task-cb:checked+.task-label .cb-text{text-decoration:line-through;color:var(--muted);opacity:.65;}
+.cb-text{display:flex;align-items:flex-start;gap:5px;flex:1;flex-wrap:wrap;}
+/* PROGRESS */
+.prog-wrap{background:var(--card);border-radius:10px;padding:14px 18px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.prog-label{font-size:11px;color:var(--muted);white-space:nowrap;width:52px;}
+.prog-bar{flex:1;height:7px;background:var(--bg);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:4px;transition:width .4s;}
+.prog-pct{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;color:var(--muted);width:36px;text-align:right;}
+/* DAY GRID */
+.week-section{margin-bottom:28px;}
+.week-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.week-badge{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:4px;}
+.week-header h3{font-size:15px;font-weight:800;}
+.week-header p{font-size:11px;color:var(--muted);}
+.week-label{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:.5px;padding:4px 0;border-bottom:1px solid var(--border);}
+.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:14px;}
+.day-card{background:var(--card);border-radius:9px;padding:11px 12px;border-left:4px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,.05);}
+.day-name{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;}
+.tl{font-family:'Space Grotesk',sans-serif;font-size:8px;font-weight:600;background:var(--bg);color:var(--muted);padding:1px 3px;border-radius:2px;flex-shrink:0;white-space:nowrap;margin-top:2px;}
+.rest-card{text-align:center;padding:18px 10px;background:var(--card);border-radius:9px;border-left:4px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,.05);}
+.rest-card .ri{font-size:22px;}
+.rest-card p{font-size:10px;color:var(--muted);margin-top:4px;}
+.abroad-card{background:#fffbeb;border-left:4px solid var(--c4);border-radius:9px;padding:11px 12px;box-shadow:0 1px 2px rgba(0,0,0,.05);}
+.abroad-card .ai{font-size:18px;margin-bottom:4px;}
+/* SUBJECT */
+.subj-section{margin-bottom:24px;}
+.subj-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.subj-header h3{font-size:15px;font-weight:900;}
+.subj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px;}
+.subj-card{background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.subj-card-head{padding:10px 14px;font-size:12.5px;font-weight:700;}
+.subj-card-body{padding:2px 14px 10px;}
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:10.5px;color:#4b5563;background:var(--card);padding:3px 9px;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+.leg-dot{width:8px;height:8px;border-radius:50%;}
+/* DAILY TABLE */
+.daily-tbl{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:20px;}
+.daily-tbl th{background:var(--ink);color:#fff;font-size:11px;padding:9px 12px;text-align:left;font-weight:600;}
+.daily-tbl td{font-size:11.5px;padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6;}
+.daily-tbl tr:last-child td{border-bottom:none;}
+.daily-tbl tr:nth-child(even) td{background:#f9fafb;}
+.t-cell{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:11px;color:var(--muted);white-space:nowrap;}
+/* TIPS */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.tip-card{background:var(--card);border-radius:9px;padding:16px;border-top:3px solid var(--c2);}
+.tip-card h4{font-size:13px;font-weight:700;margin-bottom:6px;}
+.tip-card p{font-size:11.5px;color:#4b5563;line-height:1.7;}
+.ov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;margin-bottom:22px;}
+.ov-card{background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.ov-card h3{font-size:14px;font-weight:800;margin-bottom:4px;}
+.ov-card p{font-size:11px;color:var(--muted);line-height:1.7;}
+@media(max-width:600px){.day-grid{grid-template-columns:repeat(2,1fr);}.subj-grid{grid-template-columns:1fr;}.tips-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-badge">2025 暑假複習計畫</div>
+  <h1>八年級升九年級<br><span>暑假全科衝刺計畫</span></h1>
+  <p>6/29–8/31 ｜翰林版（國文・數學・英文・社會）× 南一版（自然）</p>
+  <div class="hero-stats">
+    <div><div class="stat-num">66</div><div class="stat-label">複習天數</div></div>
+    <div><div class="stat-num">5</div><div class="stat-label">主要科目</div></div>
+    <div><div class="stat-num">10</div><div class="stat-label">出國天數</div></div>
+    <div><div class="stat-num">3~4h</div><div class="stat-label">每日學習</div></div>
+  </div>
+</div>
+<div class="tabs-wrap">
+  <div class="tabs">
+    <div class="tab active" onclick="showPanel('game',this)">🎮 闖關成就</div>
+    <div class="tab" onclick="showPanel('overview',this)">📋 計畫總覽</div>
+    <div class="tab" onclick="showPanel('subjects',this)">📚 科目章節</div>
+    <div class="tab" onclick="showPanel('schedule',this)">📅 每日計畫</div>
+    <div class="tab" onclick="showPanel('daily',this)">🕐 時程安排</div>
+    <div class="tab" onclick="showPanel('tips',this)">💡 複習技巧</div>
+  </div>
+</div>
+<div class="main">
+
+<!-- GAME PANEL -->
+<div id="game" class="panel active">
+  <div class="sec-title">🎮 闖關成就系統</div>
+  <div class="sec-sub">每完成一個任務就獲得經驗值，解鎖徽章、升級稱號！</div>
+  <div id="game-panel"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">載入中…</div></div>
+</div>
+
+<!-- OVERVIEW -->
+<div id="overview" class="panel">
+  <div class="sec-title">計畫總覽</div>
+  <div class="sec-sub">三階段策略 × 版本對應 × 出國調整</div>
+  <div class="info-box">
+    <strong>📌 三大階段：</strong><br>
+    <strong>第一階段（6/29–7/20）</strong>：七年級全科複習（翰林＋南一）<br>
+    <strong>第二階段（7/21–8/31）</strong>：八年級全科複習（翰林＋南一）<br>
+    <strong>✈️ 8/4–8/13 出國期間</strong>：每日僅 1 小時，英文單字30分＋國文背誦30分<br><strong>☀️ 每週日</strong>：安排 2 小時輕量複習（9:00–11:00），不完全休息
+  </div>
+  <div class="warn-box"><strong>📖 版本說明：</strong>國文・數學・英文・社會 → <strong>翰林版</strong>｜自然（生物/理化/地科）→ <strong>南一版</strong></div>
+  <div class="ov-grid">
+    <div class="ov-card" style="border-top:3px solid var(--c1)"><h3>📖 國文（翰林）</h3><p>七上夏夜・論語選・兒時記趣・背影<br>七下近體詩・五柳先生傳<br>八上愛蓮說・鳥・張釋之執法<br>八下陋室銘・木蘭詩・空城計</p></div>
+    <div class="ov-card" style="border-top:3px solid var(--c3)"><h3>📐 數學（翰林）</h3><p>七上：整數・分數・一次方程式・幾何<br>七下：坐標・平行線・不等式・統計<br>八上：乘法公式・根式・因式分解<br>八下：二次方程式・直線方程式・相似形・圓</p></div>
+    <div class="ov-card" style="border-top:3px solid var(--c2)"><h3>🔤 英文（翰林）</h3><p>七年級：現在/過去/未來式・疑問否定・1200字彙<br>八年級：現在完成式・過去進行式・關係代名詞・被動語態・假設語氣・段落寫作</p></div>
+    <div class="ov-card" style="border-top:3px solid var(--c5)"><h3>🔬 自然（南一）</h3><p>七上：生命發現・細胞・植物・動物<br>七下：地球構造・板塊・物質性質・熱<br>八上：光・聲音・力・運動<br>八下：原子・化學反應・生殖・遺傳</p></div>
+    <div class="ov-card" style="border-top:3px solid var(--c6)"><h3>🗺️ 社會（翰林）</h3><p>歷史：台灣史→日治→中國史→戰後<br>地理：台灣→亞洲→澳洲→歐美<br>公民：民主・人權・法律・經濟</p></div>
+  </div>
+  <div class="prog-wrap">
+    <div style="font-size:13px;font-weight:700;margin-bottom:12px;">📊 章節完成進度</div>
+    <div class="prog-row"><span class="prog-label">國文</span><div class="prog-bar"><div class="prog-fill" id="pCH" style="width:0%;background:var(--c1)"></div></div><span class="prog-pct" id="pCHt">0%</span></div>
+    <div class="prog-row"><span class="prog-label">數學</span><div class="prog-bar"><div class="prog-fill" id="pMA" style="width:0%;background:var(--c3)"></div></div><span class="prog-pct" id="pMAt">0%</span></div>
+    <div class="prog-row"><span class="prog-label">英文</span><div class="prog-bar"><div class="prog-fill" id="pEN" style="width:0%;background:var(--c2)"></div></div><span class="prog-pct" id="pENt">0%</span></div>
+    <div class="prog-row"><span class="prog-label">自然</span><div class="prog-bar"><div class="prog-fill" id="pSC" style="width:0%;background:var(--c5)"></div></div><span class="prog-pct" id="pSCt">0%</span></div>
+    <div class="prog-row"><span class="prog-label">社會</span><div class="prog-bar"><div class="prog-fill" id="pSO" style="width:0%;background:var(--c6)"></div></div><span class="prog-pct" id="pSOt">0%</span></div>
+    <div class="prog-row" style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px;"><span class="prog-label" style="font-weight:700;color:var(--ink);width:52px">總進度</span><div class="prog-bar"><div class="prog-fill" id="pALL" style="width:0%;background:linear-gradient(90deg,var(--c3),var(--c2))"></div></div><span class="prog-pct" id="pALLt" style="color:var(--ink);font-weight:700;">0%</span></div>
+  </div>
+</div>
+<!-- SUBJECTS -->
+<div id="subjects" class="panel">
+  <div class="sec-title">科目章節（翰林版＋南一版）</div>
+  <div class="sec-sub">依課本實際章節，點選方格打勾完成</div>
+
+  <div class="subj-section">
+    <div class="subj-header"><span>📖</span><h3 style="color:var(--c1)">國文（翰林版）</h3></div>
+    <div class="subj-grid">
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#fff1f2">七上 第一冊</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="ch1" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch1"><span class="cb-box"></span><span class="cb-text">第1課 夏夜（楊喚）・詩歌</span></label>
+          <input type="checkbox" class="task-cb" id="ch2" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch2"><span class="cb-box"></span><span class="cb-text">第2課 論語選（學而・為政）</span></label>
+          <input type="checkbox" class="task-cb" id="ch3" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch3"><span class="cb-box"></span><span class="cb-text">第3課 雅量・第4課 母親的教誨</span></label>
+          <input type="checkbox" class="task-cb" id="ch4" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch4"><span class="cb-box"></span><span class="cb-text">第5課 兒時記趣（沈復）文言</span></label>
+          <input type="checkbox" class="task-cb" id="ch5" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch5"><span class="cb-box"></span><span class="cb-text">第6課 背影（朱自清）抒情文</span></label>
+          <input type="checkbox" class="task-cb" id="ch6" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch6"><span class="cb-box"></span><span class="cb-text">語常(一)標點符號・字音字形</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#fff1f2">七下 第二冊</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="ch7" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch7"><span class="cb-box"></span><span class="cb-text">第1課 小詩選（艾青・白靈）</span></label>
+          <input type="checkbox" class="task-cb" id="ch8" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch8"><span class="cb-box"></span><span class="cb-text">第3課 聲音鐘・語常漢字結構</span></label>
+          <input type="checkbox" class="task-cb" id="ch9" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch9"><span class="cb-box"></span><span class="cb-text">第5課 近體詩選（贈汪倫・聞官軍）</span></label>
+          <input type="checkbox" class="task-cb" id="ch10" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch10"><span class="cb-box"></span><span class="cb-text">第6課 紙船印象（洪醒夫）散文</span></label>
+          <input type="checkbox" class="task-cb" id="ch11" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch11"><span class="cb-box"></span><span class="cb-text">第8課 五柳先生傳（陶淵明）</span></label>
+          <input type="checkbox" class="task-cb" id="ch12" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch12"><span class="cb-box"></span><span class="cb-text">第9課 謝天・修辭技巧</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#fff1f2">八上 第三冊</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="ch13" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch13"><span class="cb-box"></span><span class="cb-text">第1課 田園之秋選・語常詞類</span></label>
+          <input type="checkbox" class="task-cb" id="ch14" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch14"><span class="cb-box"></span><span class="cb-text">第2課 古詩選（迢迢牽牛星等）</span></label>
+          <input type="checkbox" class="task-cb" id="ch15" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch15"><span class="cb-box"></span><span class="cb-text">第4課 愛蓮說（周敦頤）文言</span></label>
+          <input type="checkbox" class="task-cb" id="ch16" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch16"><span class="cb-box"></span><span class="cb-text">第6課 鳥（梁實秋）・語常句子</span></label>
+          <input type="checkbox" class="task-cb" id="ch17" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch17"><span class="cb-box"></span><span class="cb-text">第7課 張釋之執法（史記）</span></label>
+          <input type="checkbox" class="task-cb" id="ch18" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch18"><span class="cb-box"></span><span class="cb-text">第8-10課 綜合閱讀練習</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#fff1f2">八下 第四冊</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="ch19" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch19"><span class="cb-box"></span><span class="cb-text">第1課 陋室銘（劉禹錫）・書信</span></label>
+          <input type="checkbox" class="task-cb" id="ch20" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch20"><span class="cb-box"></span><span class="cb-text">第2課 余光中詩・第3課 康橋</span></label>
+          <input type="checkbox" class="task-cb" id="ch21" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch21"><span class="cb-box"></span><span class="cb-text">第5課 木蘭詩（樂府詩）</span></label>
+          <input type="checkbox" class="task-cb" id="ch22" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch22"><span class="cb-box"></span><span class="cb-text">第8課 空城計（三國演義）</span></label>
+          <input type="checkbox" class="task-cb" id="ch23" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch23"><span class="cb-box"></span><span class="cb-text">第9-10課 管好舌頭・科幻短篇</span></label>
+          <input type="checkbox" class="task-cb" id="ch24" data-cat="CH" onchange="saveCB(this)"><label class="task-label" for="ch24"><span class="cb-box"></span><span class="cb-text">作文：記敘/議論/抒情文練習</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subj-section">
+    <div class="subj-header"><span>📐</span><h3 style="color:var(--c3)">數學（翰林版）</h3></div>
+    <div class="subj-grid">
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#ecfdf5">七上 數學1</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="ma1" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma1"><span class="cb-box"></span><span class="cb-text">Ch1 整數運算（正負數・絕對值）</span></label>
+          <input type="checkbox" class="task-cb" id="ma2" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma2"><span class="cb-box"></span><span class="cb-text">Ch2 分數小數・比・比例式</span></label>
+          <input type="checkbox" class="task-cb" id="ma3" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma3"><span class="cb-box"></span><span class="cb-text">Ch3 一元一次方程式</span></label>
+          <input type="checkbox" class="task-cb" id="ma4" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma4"><span class="cb-box"></span><span class="cb-text">Ch4 幾何（直線・角・三角形）</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#ecfdf5">七下 數學2</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="ma5" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma5"><span class="cb-box"></span><span class="cb-text">Ch1 坐標平面・象限・兩點距離</span></label>
+          <input type="checkbox" class="task-cb" id="ma6" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma6"><span class="cb-box"></span><span class="cb-text">Ch2 平行線・多邊形・尺規作圖</span></label>
+          <input type="checkbox" class="task-cb" id="ma7" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma7"><span class="cb-box"></span><span class="cb-text">Ch3 一元一次不等式</span></label>
+          <input type="checkbox" class="task-cb" id="ma8" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma8"><span class="cb-box"></span><span class="cb-text">Ch4 統計（平均・中位・圖表）</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#ecfdf5">八上 數學3</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="ma9" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma9"><span class="cb-box"></span><span class="cb-text">Ch1 乘法公式（和差積・平方差）</span></label>
+          <input type="checkbox" class="task-cb" id="ma10" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma10"><span class="cb-box"></span><span class="cb-text">Ch1 多項式加減乘除</span></label>
+          <input type="checkbox" class="task-cb" id="ma11" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma11"><span class="cb-box"></span><span class="cb-text">Ch2 二次方根・根式・畢氏定理</span></label>
+          <input type="checkbox" class="task-cb" id="ma12" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma12"><span class="cb-box"></span><span class="cb-text">Ch3 因式分解（提公因式・公式法）</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#ecfdf5">八下 數學4</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="ma13" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma13"><span class="cb-box"></span><span class="cb-text">Ch1 一元二次方程式（因式・公式）</span></label>
+          <input type="checkbox" class="task-cb" id="ma14" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma14"><span class="cb-box"></span><span class="cb-text">Ch2 直線方程式（斜率・截距）</span></label>
+          <input type="checkbox" class="task-cb" id="ma15" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma15"><span class="cb-box"></span><span class="cb-text">Ch3 相似形（比例・AA相似）</span></label>
+          <input type="checkbox" class="task-cb" id="ma16" data-cat="MA" onchange="saveCB(this)"><label class="task-label" for="ma16"><span class="cb-box"></span><span class="cb-text">Ch4 圓（圓心角・弦・切線）</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subj-section">
+    <div class="subj-header"><span>🔤</span><h3 style="color:var(--c2)">英文（翰林版）</h3></div>
+    <div class="subj-grid">
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#eff6ff">七年級文法重點</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="en1" data-cat="EN" onchange="saveCB(this)"><label class="task-label" for="en1"><span class="cb-box"></span><span class="cb-text">現在簡單式・be動詞・一般動詞</span></label>
+          <input type="checkbox" class="task-cb" id="en2" data-cat="EN" onchange="saveCB(this)"><label class="task-label" for="en2"><span class="cb-box"></span><span class="cb-text">過去式（規則/不規則動詞三態）</span></label>
+          <input type="checkbox" class="task-cb" id="en3" data-cat="EN" onchange="saveCB(this)"><label class="task-label" for="en3"><span class="cb-box"></span><span class="cb-text">未來式 will/be going to・進行式</span></label>
+          <input type="checkbox" class="task-cb" id="en4" data-cat="EN" onchange="saveCB(this)"><label class="task-label" for="en4"><span class="cb-box"></span><span class="cb-text">疑問句・否定句・名詞複數・冠詞</span></label>
+          <input type="checkbox" class="task-cb" id="en5" data-cat="EN" onchange="saveCB(this)"><label class="task-label" for="en5"><span class="cb-box"></span><span class="cb-text">七年級核心字彙 1200個</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#eff6ff">八年級文法重點</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="en6" data-cat="EN" onchange="saveCB(this)"><label class="task-label" for="en6"><span class="cb-box"></span><span class="cb-text">現在完成式 have/has+p.p.・since/for</span></label>
+          <input type="checkbox" class="task-cb" id="en7" data-cat="EN" onchange="saveCB(this)"><label class="task-label" for="en7"><span class="cb-box"></span><span class="cb-text">過去進行式 was/were+V-ing</span></label>
+          <input type="checkbox" class="task-cb" id="en8" data-cat="EN" onchange="saveCB(this)"><label class="task-label" for="en8"><span class="cb-box"></span><span class="cb-text">關係代名詞 who / which / that</span></label>
+          <input type="checkbox" class="task-cb" id="en9" data-cat="EN" onchange="saveCB(this)"><label class="task-label" for="en9"><span class="cb-box"></span><span class="cb-text">被動語態 be+p.p.（各時態）</span></label>
+          <input type="checkbox" class="task-cb" id="en10" data-cat="EN" onchange="saveCB(this)"><label class="task-label" for="en10"><span class="cb-box"></span><span class="cb-text">假設語氣 If 子句</span></label>
+          <input type="checkbox" class="task-cb" id="en11" data-cat="EN" onchange="saveCB(this)"><label class="task-label" for="en11"><span class="cb-box"></span><span class="cb-text">八年級字彙 800個・段落寫作</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subj-section">
+    <div class="subj-header"><span>🔬</span><h3 style="color:var(--c5)">自然（南一版）</h3></div>
+    <div class="subj-grid">
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#f5f3ff">七上【生物】第一冊</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="sc1" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc1"><span class="cb-box"></span><span class="cb-text">Ch1 生命的發現（生物特徵・分類）</span></label>
+          <input type="checkbox" class="task-cb" id="sc2" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc2"><span class="cb-box"></span><span class="cb-text">Ch2 細胞構造與功能（動植物比較）</span></label>
+          <input type="checkbox" class="task-cb" id="sc3" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc3"><span class="cb-box"></span><span class="cb-text">Ch3 植物體（根莖葉・維管束）</span></label>
+          <input type="checkbox" class="task-cb" id="sc4" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc4"><span class="cb-box"></span><span class="cb-text">Ch4 動物體（組織・器官・系統）</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#f5f3ff">七下【地科+理化】第二冊</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="sc5" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc5"><span class="cb-box"></span><span class="cb-text">地科 Ch1 地球構造・岩石三大類</span></label>
+          <input type="checkbox" class="task-cb" id="sc6" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc6"><span class="cb-box"></span><span class="cb-text">地科 Ch2 板塊運動・地震・火山</span></label>
+          <input type="checkbox" class="task-cb" id="sc7" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc7"><span class="cb-box"></span><span class="cb-text">理化 Ch1 物質性質（密度・溶解度）</span></label>
+          <input type="checkbox" class="task-cb" id="sc8" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc8"><span class="cb-box"></span><span class="cb-text">理化 Ch2 溫度・熱量・比熱・熱平衡</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#f5f3ff">八上【理化】第三冊</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="sc9" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc9"><span class="cb-box"></span><span class="cb-text">Ch1 光（直進・反射・折射・全反射）</span></label>
+          <input type="checkbox" class="task-cb" id="sc10" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc10"><span class="cb-box"></span><span class="cb-text">Ch2 聲音・波動・頻率・音速</span></label>
+          <input type="checkbox" class="task-cb" id="sc11" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc11"><span class="cb-box"></span><span class="cb-text">Ch3 力（重力・摩擦力・浮力・壓力）</span></label>
+          <input type="checkbox" class="task-cb" id="sc12" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc12"><span class="cb-box"></span><span class="cb-text">Ch4 運動（速度・加速度・牛頓定律）</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#f5f3ff">八下【理化+生物】第四冊</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="sc13" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc13"><span class="cb-box"></span><span class="cb-text">理化 Ch1 原子構造・週期表・離子</span></label>
+          <input type="checkbox" class="task-cb" id="sc14" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc14"><span class="cb-box"></span><span class="cb-text">理化 Ch2 化學式・化學反應式</span></label>
+          <input type="checkbox" class="task-cb" id="sc15" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc15"><span class="cb-box"></span><span class="cb-text">生物 Ch1 生殖（有性/無性・細胞分裂）</span></label>
+          <input type="checkbox" class="task-cb" id="sc16" data-cat="SC" onchange="saveCB(this)"><label class="task-label" for="sc16"><span class="cb-box"></span><span class="cb-text">生物 Ch2 遺傳（孟德爾・顯隱性）</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subj-section">
+    <div class="subj-header"><span>🗺️</span><h3 style="color:var(--c6)">社會（翰林版）</h3></div>
+    <div class="subj-grid">
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#fff7ed">歷史 七上～七下</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="so1" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so1"><span class="cb-box"></span><span class="cb-text">七上 台灣史前文化・原住民族</span></label>
+          <input type="checkbox" class="task-cb" id="so2" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so2"><span class="cb-box"></span><span class="cb-text">七上 荷西統治・明鄭時期</span></label>
+          <input type="checkbox" class="task-cb" id="so3" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so3"><span class="cb-box"></span><span class="cb-text">七上 清領時期（開墾・社會變遷）</span></label>
+          <input type="checkbox" class="task-cb" id="so4" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so4"><span class="cb-box"></span><span class="cb-text">七下 日治政治・經濟・社會文化</span></label>
+          <input type="checkbox" class="task-cb" id="so5" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so5"><span class="cb-box"></span><span class="cb-text">七下 抗日運動・文化協會</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#fff7ed">歷史 八上～八下</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="so6" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so6"><span class="cb-box"></span><span class="cb-text">八上 中國史 先秦～隋唐</span></label>
+          <input type="checkbox" class="task-cb" id="so7" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so7"><span class="cb-box"></span><span class="cb-text">八上 宋元明清・晚清社會變遷</span></label>
+          <input type="checkbox" class="task-cb" id="so8" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so8"><span class="cb-box"></span><span class="cb-text">八下 民初政局・軍閥・北伐</span></label>
+          <input type="checkbox" class="task-cb" id="so9" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so9"><span class="cb-box"></span><span class="cb-text">八下 抗戰・國共內戰・戰後台灣</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#ecfdf5">地理 七上～八下</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="so10" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so10"><span class="cb-box"></span><span class="cb-text">七 台灣地形・氣候・水文</span></label>
+          <input type="checkbox" class="task-cb" id="so11" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so11"><span class="cb-box"></span><span class="cb-text">七 台灣人口・聚落・產業</span></label>
+          <input type="checkbox" class="task-cb" id="so12" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so12"><span class="cb-box"></span><span class="cb-text">八上 東亞・東南亞・南亞地理</span></label>
+          <input type="checkbox" class="task-cb" id="so13" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so13"><span class="cb-box"></span><span class="cb-text">八上 澳洲・兩極地區</span></label>
+          <input type="checkbox" class="task-cb" id="so14" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so14"><span class="cb-box"></span><span class="cb-text">八下 東北亞・歐洲・美洲地理</span></label>
+        </div>
+      </div>
+      <div class="subj-card">
+        <div class="subj-card-head" style="background:#fffbeb">公民 七上～八下</div>
+        <div class="subj-card-body">
+          <input type="checkbox" class="task-cb" id="so15" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so15"><span class="cb-box"></span><span class="cb-text">七 個人與社會・家庭・社區</span></label>
+          <input type="checkbox" class="task-cb" id="so16" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so16"><span class="cb-box"></span><span class="cb-text">七 基本人權・性別平等</span></label>
+          <input type="checkbox" class="task-cb" id="so17" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so17"><span class="cb-box"></span><span class="cb-text">八上 民主政治・選舉・政治參與</span></label>
+          <input type="checkbox" class="task-cb" id="so18" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so18"><span class="cb-box"></span><span class="cb-text">八下 法治人權・行政法・刑法</span></label>
+          <input type="checkbox" class="task-cb" id="so19" data-cat="SO" onchange="saveCB(this)"><label class="task-label" for="so19"><span class="cb-box"></span><span class="cb-text">八下 民法・經濟生活・國際關係</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- SCHEDULE -->
+<div id="schedule" class="panel">
+  <div class="sec-title">每日詳細計畫表</div>
+  <div class="sec-sub">每個時段皆可打勾 ✓｜8/4–8/13 出國期間縮為每日 1 小時</div>
+  <div class="warn-box">✈️ <strong>8/4–8/13 出國 10 天</strong>：每天早上 1 小時，英文單字 30 分鐘＋國文背誦 30 分鐘。☀️ <strong>週日</strong>：全程每週日都排 2 小時輕量複習（9:00–11:00），不完全休息。</div>
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:var(--c1)"></div>國文</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--c3)"></div>數學</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--c2)"></div>英文</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--c5)"></div>自然</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--c6)"></div>社會</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--c4)"></div>綜合/考試</div>
+  </div>
+
+  <!-- 第一階段 -->
+  <div class="week-section">
+    <div class="week-header"><span class="week-badge" style="background:var(--ink);color:var(--c4)">第一階段</span><div><h3>七年級複習</h3><p>6/29–7/20</p></div></div>
+
+    <div class="week-label">第一週 6/29（日）– 7/5（六）</div>
+    <div class="day-grid">
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 6/29 ☀️</div>
+        <input type="checkbox" class="task-cb" id="ts01" onchange="saveCB(this)"><label class="task-label" for="ts01"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：整數正負數・絕對值</span></label>
+        <input type="checkbox" class="task-cb" id="ts02" onchange="saveCB(this)"><label class="task-label" for="ts02"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>🔤英文：現在簡單式句型總整理</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週五 7/4</div>
+        <input type="checkbox" class="task-cb" id="t5" onchange="saveCB(this)"><label class="task-label" for="t5"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：夏夜・論語選閱讀</span></label>
+        <input type="checkbox" class="task-cb" id="t6" onchange="saveCB(this)"><label class="task-label" for="t6"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📖國文：標點符號・字音字形</span></label>
+        <input type="checkbox" class="task-cb" id="t7" onchange="saveCB(this)"><label class="task-label" for="t7"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(歷史)：台灣史前・原住民</span></label>
+        <input type="checkbox" class="task-cb" id="t8" onchange="saveCB(this)"><label class="task-label" for="t8"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(公民)：個人與社會・家庭</span></label>
+      </div>
+      
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週五 7/4</div>
+        <input type="checkbox" class="task-cb" id="t9" onchange="saveCB(this)"><label class="task-label" for="t9"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：分數小數・比・比例式</span></label>
+        <input type="checkbox" class="task-cb" id="t10" onchange="saveCB(this)"><label class="task-label" for="t10"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📐數學：比例式應用問題</span></label>
+        <input type="checkbox" class="task-cb" id="t11" onchange="saveCB(this)"><label class="task-label" for="t11"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：生命的發現・生物特徵</span></label>
+        <input type="checkbox" class="task-cb" id="t12" onchange="saveCB(this)"><label class="task-label" for="t12"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：細胞構造（動植物比較）</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c2)">
+        <div class="day-name">週五 7/4</div>
+        <input type="checkbox" class="task-cb" id="t13" onchange="saveCB(this)"><label class="task-label" for="t13"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：過去式規則動詞變化</span></label>
+        <input type="checkbox" class="task-cb" id="t14" onchange="saveCB(this)"><label class="task-label" for="t14"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔤英文：不規則動詞三態50個</span></label>
+        <input type="checkbox" class="task-cb" id="t15" onchange="saveCB(this)"><label class="task-label" for="t15"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(地理)：台灣地形・氣候</span></label>
+        <input type="checkbox" class="task-cb" id="t16" onchange="saveCB(this)"><label class="task-label" for="t16"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(歷史)：荷西・明鄭時期</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週五 7/4</div>
+        <input type="checkbox" class="task-cb" id="t17" onchange="saveCB(this)"><label class="task-label" for="t17"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：兒時記趣（文言翻譯）</span></label>
+        <input type="checkbox" class="task-cb" id="t18" onchange="saveCB(this)"><label class="task-label" for="t18"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📖國文：背影・母親的教誨</span></label>
+        <input type="checkbox" class="task-cb" id="t19" onchange="saveCB(this)"><label class="task-label" for="t19"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：植物體（根莖葉・維管束）</span></label>
+        <input type="checkbox" class="task-cb" id="t20" onchange="saveCB(this)"><label class="task-label" for="t20"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：動物體（組織・器官・系統）</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週五 7/4</div>
+        <input type="checkbox" class="task-cb" id="t21" onchange="saveCB(this)"><label class="task-label" for="t21"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：一元一次方程式解法</span></label>
+        <input type="checkbox" class="task-cb" id="t22" onchange="saveCB(this)"><label class="task-label" for="t22"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📐數學：方程式應用（年齡/速率）</span></label>
+        <input type="checkbox" class="task-cb" id="t23" onchange="saveCB(this)"><label class="task-label" for="t23"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(公民)：基本人權・性別平等</span></label>
+        <input type="checkbox" class="task-cb" id="t24" onchange="saveCB(this)"><label class="task-label" for="t24"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(地理)：台灣人口・聚落・產業</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c2)">
+        <div class="day-name">週六 7/5</div>
+        <input type="checkbox" class="task-cb" id="ts03" onchange="saveCB(this)"><label class="task-label" for="ts03"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：疑問句・否定句・名詞複數</span></label>
+        <input type="checkbox" class="task-cb" id="ts04" onchange="saveCB(this)"><label class="task-label" for="ts04"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🗺️社會(歷史)：荷西・明鄭時期</span></label>
+        <input type="checkbox" class="task-cb" id="ts05" onchange="saveCB(this)"><label class="task-label" for="ts05"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：細胞構造（動植物比較）</span></label>
+        <input type="checkbox" class="task-cb" id="ts06" onchange="saveCB(this)"><label class="task-label" for="ts06"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>📐數學：整數四則運算練習</span></label>
+      </div>
+    </div>
+    <div class="week-label">第二週 7/6（日）– 7/12（六）</div>
+    <div class="day-grid">
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 7/6 ☀️</div>
+        <input type="checkbox" class="task-cb" id="ts21" onchange="saveCB(this)"><label class="task-label" for="ts21"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：兒時記趣・背影複習</span></label>
+        <input type="checkbox" class="task-cb" id="ts22" onchange="saveCB(this)"><label class="task-label" for="ts22"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>🗺️社會(歷史)：台灣史前~明鄭複習</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週一 7/7</div>
+        <input type="checkbox" class="task-cb" id="t25" onchange="saveCB(this)"><label class="task-label" for="t25"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：幾何（直線・角・平行）</span></label>
+        <input type="checkbox" class="task-cb" id="t26" onchange="saveCB(this)"><label class="task-label" for="t26"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📐數學：三角形（內角和・全等）</span></label>
+        <input type="checkbox" class="task-cb" id="t27" onchange="saveCB(this)"><label class="task-label" for="t27"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：地球構造・岩石三大類</span></label>
+        <input type="checkbox" class="task-cb" id="t28" onchange="saveCB(this)"><label class="task-label" for="t28"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：板塊運動・地震・火山</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c2)">
+        <div class="day-name">週二 7/8</div>
+        <input type="checkbox" class="task-cb" id="t29" onchange="saveCB(this)"><label class="task-label" for="t29"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：未來式 will/be going to</span></label>
+        <input type="checkbox" class="task-cb" id="t30" onchange="saveCB(this)"><label class="task-label" for="t30"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔤英文：現在/過去進行式</span></label>
+        <input type="checkbox" class="task-cb" id="t31" onchange="saveCB(this)"><label class="task-label" for="t31"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(歷史)：清領時期開墾</span></label>
+        <input type="checkbox" class="task-cb" id="t32" onchange="saveCB(this)"><label class="task-label" for="t32"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(歷史)：清領社會文化</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週三 7/9</div>
+        <input type="checkbox" class="task-cb" id="t33" onchange="saveCB(this)"><label class="task-label" for="t33"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：小詩選・聲音鐘（新詩）</span></label>
+        <input type="checkbox" class="task-cb" id="t34" onchange="saveCB(this)"><label class="task-label" for="t34"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📖國文：近體詩（贈汪倫・聞官軍）</span></label>
+        <input type="checkbox" class="task-cb" id="t35" onchange="saveCB(this)"><label class="task-label" for="t35"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：物質性質・密度・溶解度</span></label>
+        <input type="checkbox" class="task-cb" id="t36" onchange="saveCB(this)"><label class="task-label" for="t36"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：溫度・熱量・比熱・熱平衡</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週四 7/10</div>
+        <input type="checkbox" class="task-cb" id="t37" onchange="saveCB(this)"><label class="task-label" for="t37"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：平行線・多邊形・尺規</span></label>
+        <input type="checkbox" class="task-cb" id="t38" onchange="saveCB(this)"><label class="task-label" for="t38"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📐數學：坐標平面・象限・兩點距離</span></label>
+        <input type="checkbox" class="task-cb" id="t39" onchange="saveCB(this)"><label class="task-label" for="t39"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(地理)：台灣水文・環境</span></label>
+        <input type="checkbox" class="task-cb" id="t40" onchange="saveCB(this)"><label class="task-label" for="t40"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(公民)：人權・弱勢族群</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c2)">
+        <div class="day-name">週五 7/11</div>
+        <input type="checkbox" class="task-cb" id="t41" onchange="saveCB(this)"><label class="task-label" for="t41"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：疑問句・否定句・名詞複數</span></label>
+        <input type="checkbox" class="task-cb" id="t42" onchange="saveCB(this)"><label class="task-label" for="t42"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔤英文：七年級字彙 1–400</span></label>
+        <input type="checkbox" class="task-cb" id="t43" onchange="saveCB(this)"><label class="task-label" for="t43"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(歷史)：日治政治・經濟</span></label>
+        <input type="checkbox" class="task-cb" id="t44" onchange="saveCB(this)"><label class="task-label" for="t44"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(歷史)：抗日・文化協會</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週六 7/12</div>
+        <input type="checkbox" class="task-cb" id="t45" onchange="saveCB(this)"><label class="task-label" for="t45"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：紙船印象・五柳先生傳</span></label>
+        <input type="checkbox" class="task-cb" id="t46" onchange="saveCB(this)"><label class="task-label" for="t46"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📖國文：謝天・修辭技巧總整理</span></label>
+        <input type="checkbox" class="task-cb" id="t47" onchange="saveCB(this)"><label class="task-label" for="t47"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>📐數學：一元一次不等式</span></label>
+        <input type="checkbox" class="task-cb" id="t48" onchange="saveCB(this)"><label class="task-label" for="t48"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>📐數學：統計（平均/中位/圖表）</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 7/13 ☀️</div>
+        <input type="checkbox" class="task-cb" id="ts07" onchange="saveCB(this)"><label class="task-label" for="ts07"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：一元一次不等式</span></label>
+        <input type="checkbox" class="task-cb" id="ts08" onchange="saveCB(this)"><label class="task-label" for="ts08"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>📐數學：統計（平均/中位/圖表）</span></label>
+      </div>
+    </div>
+
+    <div class="week-label">第三週 7/13（日）– 7/20（日）▸ 七年級衝刺週</div>
+    <div class="day-grid">
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 7/13 ☀️</div>
+        <input type="checkbox" class="task-cb" id="ts07" onchange="saveCB(this)"><label class="task-label" for="ts07"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：坐標平面・不等式複習</span></label>
+        <input type="checkbox" class="task-cb" id="ts08" onchange="saveCB(this)"><label class="task-label" for="ts08"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>🔬自然：七年級生物・地科複習</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週一 7/14</div>
+        <input type="checkbox" class="task-cb" id="t49" onchange="saveCB(this)"><label class="task-label" for="t49"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：七上總複習測驗</span></label>
+        <input type="checkbox" class="task-cb" id="t50" onchange="saveCB(this)"><label class="task-label" for="t50"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📐數學：七下總複習測驗</span></label>
+        <input type="checkbox" class="task-cb" id="t51" onchange="saveCB(this)"><label class="task-label" for="t51"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>📐數學：錯題訂正強化</span></label>
+        <input type="checkbox" class="task-cb" id="t52" onchange="saveCB(this)"><label class="task-label" for="t52"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：七年級自然總測驗</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c2)">
+        <div class="day-name">週二 7/15</div>
+        <input type="checkbox" class="task-cb" id="t53" onchange="saveCB(this)"><label class="task-label" for="t53"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：七年級字彙 400–800</span></label>
+        <input type="checkbox" class="task-cb" id="t54" onchange="saveCB(this)"><label class="task-label" for="t54"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔤英文：七年級文法綜合測驗</span></label>
+        <input type="checkbox" class="task-cb" id="t55" onchange="saveCB(this)"><label class="task-label" for="t55"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(歷史)：七年級模擬測驗</span></label>
+        <input type="checkbox" class="task-cb" id="t56" onchange="saveCB(this)"><label class="task-label" for="t56"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(地理+公民)：七年級測驗</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週三 7/16</div>
+        <input type="checkbox" class="task-cb" id="t57" onchange="saveCB(this)"><label class="task-label" for="t57"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：七年級課文總測驗</span></label>
+        <input type="checkbox" class="task-cb" id="t58" onchange="saveCB(this)"><label class="task-label" for="t58"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📖國文：文言文翻譯・詩詞鑑賞</span></label>
+        <input type="checkbox" class="task-cb" id="t59" onchange="saveCB(this)"><label class="task-label" for="t59"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：錯題整理（板塊/物質/熱）</span></label>
+        <input type="checkbox" class="task-cb" id="t60" onchange="saveCB(this)"><label class="task-label" for="t60"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔤英文：七年級閱讀理解</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4)">
+        <div class="day-name">週四 7/17</div>
+        <input type="checkbox" class="task-cb" id="t61" onchange="saveCB(this)"><label class="task-label" for="t61"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:30</span>📝七年級全科綜合模擬考（一）</span></label>
+        <input type="checkbox" class="task-cb" id="t62" onchange="saveCB(this)"><label class="task-label" for="t62"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-16:00</span>📊批閱・弱點標記・錯題整理</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4)">
+        <div class="day-name">週五 7/18</div>
+        <input type="checkbox" class="task-cb" id="t63" onchange="saveCB(this)"><label class="task-label" for="t63"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-11:00</span>🔍弱點科目加強複習</span></label>
+        <input type="checkbox" class="task-cb" id="t64" onchange="saveCB(this)"><label class="task-label" for="t64"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:30</span>📝七年級全科綜合模擬考（二）</span></label>
+        <input type="checkbox" class="task-cb" id="t65" onchange="saveCB(this)"><label class="task-label" for="t65"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:30-16:00</span>📖整理精華筆記</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週六 7/19</div>
+        <input type="checkbox" class="task-cb" id="t66" onchange="saveCB(this)"><label class="task-label" for="t66"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：作文練習（記敘文）</span></label>
+        <input type="checkbox" class="task-cb" id="t67" onchange="saveCB(this)"><label class="task-label" for="t67"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔤英文：字彙 800–1200 複習</span></label>
+        <input type="checkbox" class="task-cb" id="t68" onchange="saveCB(this)"><label class="task-label" for="t68"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:30</span>🗺️社會：七年級精華筆記整理</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 7/20 ☀️</div>
+        <input type="checkbox" class="task-cb" id="ts09" onchange="saveCB(this)"><label class="task-label" for="ts09"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🗺️社會：七年級精華筆記總整理</span></label>
+        <input type="checkbox" class="task-cb" id="ts10" onchange="saveCB(this)"><label class="task-label" for="ts10"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>🔤英文：七年級字彙 800–1200 複習</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 第二階段 -->
+  <div class="week-section">
+    <div class="week-header"><span class="week-badge" style="background:var(--c2);color:#fff">第二階段</span><div><h3>八年級複習</h3><p>7/21–8/31（含出國調整）</p></div></div>
+
+    <div class="week-label">第四週 7/20（日）– 7/27（日）</div>
+    <div class="day-grid">
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 7/20 ☀️</div>
+        <input type="checkbox" class="task-cb" id="ts09" onchange="saveCB(this)"><label class="task-label" for="ts09"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🗺️社會：七年級歷史・地理精華筆記</span></label>
+        <input type="checkbox" class="task-cb" id="ts10" onchange="saveCB(this)"><label class="task-label" for="ts10"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>🔤英文：七年級字彙 800–1200 複習</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週一 7/21</div>
+        <input type="checkbox" class="task-cb" id="t69" onchange="saveCB(this)"><label class="task-label" for="t69"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：乘法公式（和差平方）</span></label>
+        <input type="checkbox" class="task-cb" id="t70" onchange="saveCB(this)"><label class="task-label" for="t70"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📐數學：多項式加減乘除</span></label>
+        <input type="checkbox" class="task-cb" id="t71" onchange="saveCB(this)"><label class="task-label" for="t71"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：光（直進・反射・折射）</span></label>
+        <input type="checkbox" class="task-cb" id="t72" onchange="saveCB(this)"><label class="task-label" for="t72"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：透鏡成像・全反射</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c2)">
+        <div class="day-name">週二 7/22</div>
+        <input type="checkbox" class="task-cb" id="t73" onchange="saveCB(this)"><label class="task-label" for="t73"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：現在完成式＋since/for</span></label>
+        <input type="checkbox" class="task-cb" id="t74" onchange="saveCB(this)"><label class="task-label" for="t74"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔤英文：完成式 vs 過去式對比</span></label>
+        <input type="checkbox" class="task-cb" id="t75" onchange="saveCB(this)"><label class="task-label" for="t75"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(歷史)：先秦～隋唐</span></label>
+        <input type="checkbox" class="task-cb" id="t76" onchange="saveCB(this)"><label class="task-label" for="t76"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(地理)：東亞地理概述</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週三 7/23</div>
+        <input type="checkbox" class="task-cb" id="t77" onchange="saveCB(this)"><label class="task-label" for="t77"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：田園之秋選（散文）</span></label>
+        <input type="checkbox" class="task-cb" id="t78" onchange="saveCB(this)"><label class="task-label" for="t78"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📖國文：古詩選（迢迢牽牛星等）</span></label>
+        <input type="checkbox" class="task-cb" id="t79" onchange="saveCB(this)"><label class="task-label" for="t79"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：聲音・波動・頻率</span></label>
+        <input type="checkbox" class="task-cb" id="t80" onchange="saveCB(this)"><label class="task-label" for="t80"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：聲音特性（音調/音量/音色）</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週四 7/24</div>
+        <input type="checkbox" class="task-cb" id="t81" onchange="saveCB(this)"><label class="task-label" for="t81"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：二次方根・根式乘除</span></label>
+        <input type="checkbox" class="task-cb" id="t82" onchange="saveCB(this)"><label class="task-label" for="t82"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📐數學：根式加減・有理化・畢氏</span></label>
+        <input type="checkbox" class="task-cb" id="t83" onchange="saveCB(this)"><label class="task-label" for="t83"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(歷史)：宋元明清・晚清</span></label>
+        <input type="checkbox" class="task-cb" id="t84" onchange="saveCB(this)"><label class="task-label" for="t84"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(地理)：東南亞・南亞</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c2)">
+        <div class="day-name">週五 7/25</div>
+        <input type="checkbox" class="task-cb" id="t85" onchange="saveCB(this)"><label class="task-label" for="t85"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：過去進行式用法</span></label>
+        <input type="checkbox" class="task-cb" id="t86" onchange="saveCB(this)"><label class="task-label" for="t86"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔤英文：關係代名詞 who/which/that</span></label>
+        <input type="checkbox" class="task-cb" id="t87" onchange="saveCB(this)"><label class="task-label" for="t87"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(公民)：民主政治・選舉</span></label>
+        <input type="checkbox" class="task-cb" id="t88" onchange="saveCB(this)"><label class="task-label" for="t88"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(歷史)：民初政局・軍閥</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週六 7/26</div>
+        <input type="checkbox" class="task-cb" id="t89" onchange="saveCB(this)"><label class="task-label" for="t89"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：愛蓮說（翻譯・主旨）</span></label>
+        <input type="checkbox" class="task-cb" id="t90" onchange="saveCB(this)"><label class="task-label" for="t90"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📖國文：鳥（梁實秋）・詞類</span></label>
+        <input type="checkbox" class="task-cb" id="t91" onchange="saveCB(this)"><label class="task-label" for="t91"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：力（重力・摩擦力）</span></label>
+        <input type="checkbox" class="task-cb" id="t92" onchange="saveCB(this)"><label class="task-label" for="t92"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：浮力・壓力・阿基米德</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 7/27 ☀️</div>
+        <input type="checkbox" class="task-cb" id="ts11" onchange="saveCB(this)"><label class="task-label" for="ts11"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔬自然：光＆聲音重點複習</span></label>
+        <input type="checkbox" class="task-cb" id="ts12" onchange="saveCB(this)"><label class="task-label" for="ts12"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>🗺️社會(地理)：東亞・東南亞複習</span></label>
+      </div>
+    </div>
+
+    <div class="week-label">第五週 7/27（日）– 8/3（日）</div>
+    <div class="day-grid">
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 7/27 ☀️</div>
+        <input type="checkbox" class="task-cb" id="ts11" onchange="saveCB(this)"><label class="task-label" for="ts11"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔬自然：光＆聲音重點複習</span></label>
+        <input type="checkbox" class="task-cb" id="ts12" onchange="saveCB(this)"><label class="task-label" for="ts12"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>🗺️社會(地理)：東亞・東南亞複習</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週一 7/28</div>
+        <input type="checkbox" class="task-cb" id="t93" onchange="saveCB(this)"><label class="task-label" for="t93"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：因式分解（提公因式）</span></label>
+        <input type="checkbox" class="task-cb" id="t94" onchange="saveCB(this)"><label class="task-label" for="t94"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📐數學：因式分解（公式法）</span></label>
+        <input type="checkbox" class="task-cb" id="t95" onchange="saveCB(this)"><label class="task-label" for="t95"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：直線運動・速度・加速度</span></label>
+        <input type="checkbox" class="task-cb" id="t96" onchange="saveCB(this)"><label class="task-label" for="t96"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：牛頓三大運動定律</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c2)">
+        <div class="day-name">週二 7/29</div>
+        <input type="checkbox" class="task-cb" id="t97" onchange="saveCB(this)"><label class="task-label" for="t97"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：被動語態（現在/過去式）</span></label>
+        <input type="checkbox" class="task-cb" id="t98" onchange="saveCB(this)"><label class="task-label" for="t98"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔤英文：被動語態（未來/完成式）</span></label>
+        <input type="checkbox" class="task-cb" id="t99" onchange="saveCB(this)"><label class="task-label" for="t99"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(歷史)：北伐・黃金十年</span></label>
+        <input type="checkbox" class="task-cb" id="t100" onchange="saveCB(this)"><label class="task-label" for="t100"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(地理)：澳洲・兩極地區</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週三 7/30</div>
+        <input type="checkbox" class="task-cb" id="t101" onchange="saveCB(this)"><label class="task-label" for="t101"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：張釋之執法（史記）</span></label>
+        <input type="checkbox" class="task-cb" id="t102" onchange="saveCB(this)"><label class="task-label" for="t102"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📖國文：語法（句子成分・句型）</span></label>
+        <input type="checkbox" class="task-cb" id="t103" onchange="saveCB(this)"><label class="task-label" for="t103"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：原子構造・週期表・離子</span></label>
+        <input type="checkbox" class="task-cb" id="t104" onchange="saveCB(this)"><label class="task-label" for="t104"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：元素・化合物・混合物</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週四 7/31</div>
+        <input type="checkbox" class="task-cb" id="t105" onchange="saveCB(this)"><label class="task-label" for="t105"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：一元二次方程式（因式）</span></label>
+        <input type="checkbox" class="task-cb" id="t106" onchange="saveCB(this)"><label class="task-label" for="t106"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📐數學：一元二次方程式（公式解）</span></label>
+        <input type="checkbox" class="task-cb" id="t107" onchange="saveCB(this)"><label class="task-label" for="t107"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(歷史)：抗戰・國共內戰</span></label>
+        <input type="checkbox" class="task-cb" id="t108" onchange="saveCB(this)"><label class="task-label" for="t108"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(公民)：法治・行政法</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c2)">
+        <div class="day-name">週五 8/1</div>
+        <input type="checkbox" class="task-cb" id="t109" onchange="saveCB(this)"><label class="task-label" for="t109"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：假設語氣 If 子句</span></label>
+        <input type="checkbox" class="task-cb" id="t110" onchange="saveCB(this)"><label class="task-label" for="t110"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔤英文：八年級字彙 1–400</span></label>
+        <input type="checkbox" class="task-cb" id="t111" onchange="saveCB(this)"><label class="task-label" for="t111"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(歷史)：戰後台灣・民主化</span></label>
+        <input type="checkbox" class="task-cb" id="t112" onchange="saveCB(this)"><label class="task-label" for="t112"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(地理)：東北亞（日韓）</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週六 8/2</div>
+        <input type="checkbox" class="task-cb" id="t113" onchange="saveCB(this)"><label class="task-label" for="t113"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：陋室銘・書信應用</span></label>
+        <input type="checkbox" class="task-cb" id="t114" onchange="saveCB(this)"><label class="task-label" for="t114"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📖國文：余光中詩・我所知康橋</span></label>
+        <input type="checkbox" class="task-cb" id="t115" onchange="saveCB(this)"><label class="task-label" for="t115"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：化學式・化學方程式</span></label>
+        <input type="checkbox" class="task-cb" id="t116" onchange="saveCB(this)"><label class="task-label" for="t116"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：化學反應（酸鹼・氧化還原）</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 8/3 ☀️ 出國前</div>
+        <input type="checkbox" class="task-cb" id="ts13" onchange="saveCB(this)"><label class="task-label" for="ts13"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：因式分解重點整理</span></label>
+        <input type="checkbox" class="task-cb" id="ts14" onchange="saveCB(this)"><label class="task-label" for="ts14"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>📖國文：陋室銘・余光中詩複習</span></label>
+      </div>
+    </div>
+
+    <!-- 出國期間 -->
+    <div class="week-label">✈️ 出國期間 8/4（一）– 8/13（三）每日僅 1 小時</div>
+    <div class="day-grid">
+      <div class="abroad-card"><div class="ai">✈️</div><div class="day-name">一 8/4</div>
+        <input type="checkbox" class="task-cb" id="ta1" onchange="saveCB(this)"><label class="task-label" for="ta1"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>🔤英文：單字20個</span></label>
+        <input type="checkbox" class="task-cb" id="ta2" onchange="saveCB(this)"><label class="task-label" for="ta2"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>📖國文：木蘭詩背誦</span></label>
+      </div>
+      <div class="abroad-card"><div class="ai">✈️</div><div class="day-name">二 8/5</div>
+        <input type="checkbox" class="task-cb" id="ta3" onchange="saveCB(this)"><label class="task-label" for="ta3"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>🔤英文：單字20個</span></label>
+        <input type="checkbox" class="task-cb" id="ta4" onchange="saveCB(this)"><label class="task-label" for="ta4"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>📖國文：陋室銘・論語默寫</span></label>
+      </div>
+      <div class="abroad-card"><div class="ai">✈️</div><div class="day-name">三 8/6</div>
+        <input type="checkbox" class="task-cb" id="ta5" onchange="saveCB(this)"><label class="task-label" for="ta5"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>🔤英文：單字20個</span></label>
+        <input type="checkbox" class="task-cb" id="ta6" onchange="saveCB(this)"><label class="task-label" for="ta6"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>📖國文：近體詩・愛蓮說背誦</span></label>
+      </div>
+      <div class="abroad-card"><div class="ai">✈️</div><div class="day-name">四 8/7</div>
+        <input type="checkbox" class="task-cb" id="ta7" onchange="saveCB(this)"><label class="task-label" for="ta7"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>🔤英文：關係代名詞練習</span></label>
+        <input type="checkbox" class="task-cb" id="ta8" onchange="saveCB(this)"><label class="task-label" for="ta8"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>📖國文：古詩・五柳先生傳</span></label>
+      </div>
+      <div class="abroad-card"><div class="ai">✈️</div><div class="day-name">五 8/8</div>
+        <input type="checkbox" class="task-cb" id="ta9" onchange="saveCB(this)"><label class="task-label" for="ta9"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>🔤英文：單字＋句型回顧</span></label>
+        <input type="checkbox" class="task-cb" id="ta10" onchange="saveCB(this)"><label class="task-label" for="ta10"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>📖國文：張釋之執法背誦</span></label>
+      </div>
+      <div class="abroad-card"><div class="ai">🏖️</div><div class="day-name">六 8/9</div>
+        <input type="checkbox" class="task-cb" id="ta11" onchange="saveCB(this)"><label class="task-label" for="ta11"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>🔤英文：單字20個</span></label>
+        <input type="checkbox" class="task-cb" id="ta12" onchange="saveCB(this)"><label class="task-label" for="ta12"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>📖國文：成語・字音字形</span></label>
+      </div>
+      <div class="abroad-card"><div class="ai">🏖️</div><div class="day-name">日 8/10</div><p style="font-size:10px;color:#92400e;margin-top:4px">盡情玩！</p></div>
+      <div class="abroad-card"><div class="ai">✈️</div><div class="day-name">一 8/11</div>
+        <input type="checkbox" class="task-cb" id="ta13" onchange="saveCB(this)"><label class="task-label" for="ta13"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>🔤英文：被動語態小測</span></label>
+        <input type="checkbox" class="task-cb" id="ta14" onchange="saveCB(this)"><label class="task-label" for="ta14"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>📖國文：空城計・管好舌頭</span></label>
+      </div>
+      <div class="abroad-card"><div class="ai">✈️</div><div class="day-name">二 8/12</div>
+        <input type="checkbox" class="task-cb" id="ta15" onchange="saveCB(this)"><label class="task-label" for="ta15"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>🔤英文：假設語氣句型</span></label>
+        <input type="checkbox" class="task-cb" id="ta16" onchange="saveCB(this)"><label class="task-label" for="ta16"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>📖國文：余光中詩・默背</span></label>
+      </div>
+      <div class="abroad-card"><div class="ai">✈️</div><div class="day-name">三 8/13</div>
+        <input type="checkbox" class="task-cb" id="ta17" onchange="saveCB(this)"><label class="task-label" for="ta17"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>🔤英文：出國字彙總回顧</span></label>
+        <input type="checkbox" class="task-cb" id="ta18" onchange="saveCB(this)"><label class="task-label" for="ta18"><span class="cb-box"></span><span class="cb-text"><span class="tl">早30分</span>📖國文：精華句重點複習</span></label>
+      </div>
+    </div>
+
+    <div class="week-label">8/14（四）回台後 – 8/16（六）</div>
+    <div class="day-grid">
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週四 8/14 🏠回台</div>
+        <input type="checkbox" class="task-cb" id="t117" onchange="saveCB(this)"><label class="task-label" for="t117"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:00-16:00</span>📐數學：直線方程式・斜率</span></label>
+        <input type="checkbox" class="task-cb" id="t118" onchange="saveCB(this)"><label class="task-label" for="t118"><span class="cb-box"></span><span class="cb-text"><span class="tl">16:10-17:00</span>🔬自然：遺傳（孟德爾・顯隱性）</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週五 8/15</div>
+        <input type="checkbox" class="task-cb" id="t119" onchange="saveCB(this)"><label class="task-label" for="t119"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：木蘭詩・空城計精讀</span></label>
+        <input type="checkbox" class="task-cb" id="t120" onchange="saveCB(this)"><label class="task-label" for="t120"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📖國文：議論文作文練習</span></label>
+        <input type="checkbox" class="task-cb" id="t121" onchange="saveCB(this)"><label class="task-label" for="t121"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會(公民)：刑法・民法基礎</span></label>
+        <input type="checkbox" class="task-cb" id="t122" onchange="saveCB(this)"><label class="task-label" for="t122"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會(地理)：歐洲・美洲地理</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週六 8/16</div>
+        <input type="checkbox" class="task-cb" id="t123" onchange="saveCB(this)"><label class="task-label" for="t123"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：直線方程式・截距・聯立</span></label>
+        <input type="checkbox" class="task-cb" id="t124" onchange="saveCB(this)"><label class="task-label" for="t124"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📐數學：相似形（比例・AA相似）</span></label>
+        <input type="checkbox" class="task-cb" id="t125" onchange="saveCB(this)"><label class="task-label" for="t125"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：生殖・細胞分裂</span></label>
+        <input type="checkbox" class="task-cb" id="t126" onchange="saveCB(this)"><label class="task-label" for="t126"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：遺傳（染色體・基因型）</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 8/17 ☀️ 回台後</div>
+        <input type="checkbox" class="task-cb" id="ts15" onchange="saveCB(this)"><label class="task-label" for="ts15"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：出國期間字彙總回顧</span></label>
+        <input type="checkbox" class="task-cb" id="ts16" onchange="saveCB(this)"><label class="task-label" for="ts16"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>📖國文：出國期間背誦內容默寫</span></label>
+      </div>
+    </div>
+
+    <div class="week-label">第八週 8/17（日）– 8/24（日）▸ 八年級衝刺週</div>
+    <div class="day-grid">
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 8/17 ☀️ 回台後</div>
+        <input type="checkbox" class="task-cb" id="ts15" onchange="saveCB(this)"><label class="task-label" for="ts15"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：出國期間字彙總回顧</span></label>
+        <input type="checkbox" class="task-cb" id="ts16" onchange="saveCB(this)"><label class="task-label" for="ts16"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>📖國文：出國期間背誦內容默寫</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週一 8/18</div>
+        <input type="checkbox" class="task-cb" id="t127" onchange="saveCB(this)"><label class="task-label" for="t127"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：相似形應用・圓概念</span></label>
+        <input type="checkbox" class="task-cb" id="t128" onchange="saveCB(this)"><label class="task-label" for="t128"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📐數學：圓（弦・切線・圓心角）</span></label>
+        <input type="checkbox" class="task-cb" id="t129" onchange="saveCB(this)"><label class="task-label" for="t129"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🔬自然：八年級理化總複習</span></label>
+        <input type="checkbox" class="task-cb" id="t130" onchange="saveCB(this)"><label class="task-label" for="t130"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：生物+地科測驗</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c2)">
+        <div class="day-name">週二 8/19</div>
+        <input type="checkbox" class="task-cb" id="t131" onchange="saveCB(this)"><label class="task-label" for="t131"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🔤英文：八年級字彙 400–800</span></label>
+        <input type="checkbox" class="task-cb" id="t132" onchange="saveCB(this)"><label class="task-label" for="t132"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔤英文：八年級文法綜合測驗</span></label>
+        <input type="checkbox" class="task-cb" id="t133" onchange="saveCB(this)"><label class="task-label" for="t133"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🗺️社會：八年級歷史測驗</span></label>
+        <input type="checkbox" class="task-cb" id="t134" onchange="saveCB(this)"><label class="task-label" for="t134"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🗺️社會：地理+公民測驗</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週三 8/20</div>
+        <input type="checkbox" class="task-cb" id="t135" onchange="saveCB(this)"><label class="task-label" for="t135"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：八年級課文測驗</span></label>
+        <input type="checkbox" class="task-cb" id="t136" onchange="saveCB(this)"><label class="task-label" for="t136"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>📖國文：文言文・詩詞精讀測驗</span></label>
+        <input type="checkbox" class="task-cb" id="t137" onchange="saveCB(this)"><label class="task-label" for="t137"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>📐數學：八年級模擬測驗</span></label>
+        <input type="checkbox" class="task-cb" id="t138" onchange="saveCB(this)"><label class="task-label" for="t138"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>📐數學：錯題訂正強化</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4)">
+        <div class="day-name">週四 8/21</div>
+        <input type="checkbox" class="task-cb" id="t139" onchange="saveCB(this)"><label class="task-label" for="t139"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-11:30</span>📝七+八年級全科模擬考（一）</span></label>
+        <input type="checkbox" class="task-cb" id="t140" onchange="saveCB(this)"><label class="task-label" for="t140"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-16:00</span>📊批閱・弱點標記・整理</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4)">
+        <div class="day-name">週五 8/22</div>
+        <input type="checkbox" class="task-cb" id="t141" onchange="saveCB(this)"><label class="task-label" for="t141"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-11:00</span>🔍弱點科目集中補強</span></label>
+        <input type="checkbox" class="task-cb" id="t142" onchange="saveCB(this)"><label class="task-label" for="t142"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-16:30</span>📝七+八年級全科模擬考（二）</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4)">
+        <div class="day-name">週六 8/23</div>
+        <input type="checkbox" class="task-cb" id="t143" onchange="saveCB(this)"><label class="task-label" for="t143"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-11:00</span>📊第二次考試訂正・整理</span></label>
+        <input type="checkbox" class="task-cb" id="t144" onchange="saveCB(this)"><label class="task-label" for="t144"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-16:00</span>🔍最後弱點加強練習</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 8/24 ☀️</div>
+        <input type="checkbox" class="task-cb" id="ts17" onchange="saveCB(this)"><label class="task-label" for="ts17"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：錯題本重點回顧</span></label>
+        <input type="checkbox" class="task-cb" id="ts18" onchange="saveCB(this)"><label class="task-label" for="ts18"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>🔬自然：遺傳・化學反應複習</span></label>
+      </div>
+    </div>
+
+    <div class="week-label">第九週 8/24（日）– 8/31（日）▸ 最終收尾</div>
+    <div class="day-grid">
+      <div class="day-card" style="border-left-color:var(--c4);background:#fffbeb">
+        <div class="day-name">週日 8/24 ☀️</div>
+        <input type="checkbox" class="task-cb" id="ts17" onchange="saveCB(this)"><label class="task-label" for="ts17"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：錯題本重點回顧</span></label>
+        <input type="checkbox" class="task-cb" id="ts18" onchange="saveCB(this)"><label class="task-label" for="ts18"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>🔬自然：遺傳・化學反應複習</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c3)">
+        <div class="day-name">週一 8/25</div>
+        <input type="checkbox" class="task-cb" id="t145" onchange="saveCB(this)"><label class="task-label" for="t145"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📐數學：精華筆記整理</span></label>
+        <input type="checkbox" class="task-cb" id="t146" onchange="saveCB(this)"><label class="task-label" for="t146"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔬自然：精華筆記整理</span></label>
+        <input type="checkbox" class="task-cb" id="t147" onchange="saveCB(this)"><label class="task-label" for="t147"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>📐數學：公式默寫全測驗</span></label>
+        <input type="checkbox" class="task-cb" id="t148" onchange="saveCB(this)"><label class="task-label" for="t148"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔬自然：重要圖解手繪複習</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c1)">
+        <div class="day-name">週二 8/26</div>
+        <input type="checkbox" class="task-cb" id="t149" onchange="saveCB(this)"><label class="task-label" for="t149"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>📖國文：精華筆記整理</span></label>
+        <input type="checkbox" class="task-cb" id="t150" onchange="saveCB(this)"><label class="task-label" for="t150"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🔤英文：精華筆記整理</span></label>
+        <input type="checkbox" class="task-cb" id="t151" onchange="saveCB(this)"><label class="task-label" for="t151"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>📖國文：文言文最終默背確認</span></label>
+        <input type="checkbox" class="task-cb" id="t152" onchange="saveCB(this)"><label class="task-label" for="t152"><span class="cb-box"></span><span class="cb-text"><span class="tl">15:10-16:00</span>🔤英文：段落寫作練習</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c6)">
+        <div class="day-name">週三 8/27</div>
+        <input type="checkbox" class="task-cb" id="t153" onchange="saveCB(this)"><label class="task-label" for="t153"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>🗺️社會：歷史精華筆記</span></label>
+        <input type="checkbox" class="task-cb" id="t154" onchange="saveCB(this)"><label class="task-label" for="t154"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:10-11:10</span>🗺️社會：地理+公民精華筆記</span></label>
+        <input type="checkbox" class="task-cb" id="t155" onchange="saveCB(this)"><label class="task-label" for="t155"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-16:00</span>🔍最後弱點加強衝刺</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4)">
+        <div class="day-name">週四 8/28</div>
+        <input type="checkbox" class="task-cb" id="t156" onchange="saveCB(this)"><label class="task-label" for="t156"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-12:00</span>📝全科最終模擬考（三）</span></label>
+        <input type="checkbox" class="task-cb" id="t157" onchange="saveCB(this)"><label class="task-label" for="t157"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-16:00</span>📊批閱訂正・最終筆記</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4)">
+        <div class="day-name">週五 8/29</div>
+        <input type="checkbox" class="task-cb" id="t158" onchange="saveCB(this)"><label class="task-label" for="t158"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-11:00</span>✅翻閱所有精華筆記</span></label>
+        <input type="checkbox" class="task-cb" id="t159" onchange="saveCB(this)"><label class="task-label" for="t159"><span class="cb-box"></span><span class="cb-text"><span class="tl">14:00-15:00</span>🎯九年級預習（數學九上）</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c4)">
+        <div class="day-name">週六 8/30</div>
+        <input type="checkbox" class="task-cb" id="t160" onchange="saveCB(this)"><label class="task-label" for="t160"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>✅最後確認弱點公式・單字</span></label>
+        <input type="checkbox" class="task-cb" id="t161" onchange="saveCB(this)"><label class="task-label" for="t161"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>🎯整理九年級開學必備筆記</span></label>
+      </div>
+      <div class="day-card" style="border-left-color:var(--c7);background:#ecfdf5">
+        <div class="day-name">週日 8/31 🎊</div>
+        <input type="checkbox" class="task-cb" id="ts19" onchange="saveCB(this)"><label class="task-label" for="ts19"><span class="cb-box"></span><span class="cb-text"><span class="tl">9:00-10:00</span>✅ 翻閱所有精華筆記最後確認</span></label>
+        <input type="checkbox" class="task-cb" id="ts20" onchange="saveCB(this)"><label class="task-label" for="ts20"><span class="cb-box"></span><span class="cb-text"><span class="tl">10:00-11:00</span>🎯 整理開學第一週必備資料</span></label>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- DAILY -->
+<div id="daily" class="panel">
+  <div class="sec-title">每日時程安排</div>
+  <div class="sec-sub">一般學習日作息（出國期間僅執行早上 1 小時）</div>
+  <div class="info-box"><strong>黃金原則：</strong>每節 <strong>50分鐘</strong>＋休息 <strong>10分鐘</strong>，每日主科約 <strong>3.5–4 小時</strong>，睡前 10 分鐘翻筆記鞏固記憶。</div>
+  <table class="daily-tbl">
+    <thead><tr><th>時間</th><th>項目</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td class="t-cell">07:00</td><td>起床・盥洗・早餐</td><td>固定起床，維持生理時鐘</td></tr>
+      <tr><td class="t-cell">07:30–08:00</td><td>🔤 英文晨讀（30分）</td><td>朗讀英文課文或背單字 20 個，每天固定</td></tr>
+      <tr><td class="t-cell">08:00–09:00</td><td>自由活動・戶外</td><td>散步、運動，活化大腦</td></tr>
+      <tr><td class="t-cell">09:00–09:50</td><td>📐 第一節：數學 or 自然</td><td>當日計畫第一科，專注 50 分鐘</td></tr>
+      <tr><td class="t-cell">09:50–10:00</td><td>休息</td><td>眺望遠方、喝水、活動筋骨</td></tr>
+      <tr><td class="t-cell">10:00–10:50</td><td>📐 第二節：同科繼續或練習題</td><td>繼續該科或換題型、考卷</td></tr>
+      <tr><td class="t-cell">10:50–11:00</td><td>休息</td><td>輕食補充</td></tr>
+      <tr><td class="t-cell">11:00–11:50</td><td>📖 第三節：國文 or 英文</td><td>語文閱讀、文言翻譯、背誦</td></tr>
+      <tr><td class="t-cell">12:00–13:30</td><td>🍱 午餐＋午休</td><td>午睡 30 分鐘，提升下午專注力</td></tr>
+      <tr><td class="t-cell">13:30–14:20</td><td>🗺️ 第四節：社會（歷史/地理/公民）</td><td>默寫時間軸、標示地圖、公民重點卡</td></tr>
+      <tr><td class="t-cell">14:20–14:30</td><td>休息</td><td></td></tr>
+      <tr><td class="t-cell">14:30–15:20</td><td>🔬 第五節：自然 or 社會（輪換）</td><td>完成當日計畫的第二科</td></tr>
+      <tr><td class="t-cell">15:20–17:00</td><td>自由時間</td><td>運動、興趣、社交</td></tr>
+      <tr><td class="t-cell">17:00–18:30</td><td>晚餐・家務</td><td></td></tr>
+      <tr><td class="t-cell">18:30–19:20</td><td>📝 複習整理筆記</td><td>今日錯題整理、製作重點卡片</td></tr>
+      <tr><td class="t-cell">19:20–20:00</td><td>📖 課外閱讀（選）</td><td>廣泛閱讀培養語文素養</td></tr>
+      <tr><td class="t-cell">20:00–21:30</td><td>個人休閒</td><td>影集、遊戲、放鬆</td></tr>
+      <tr><td class="t-cell">21:30–22:00</td><td>🌙 睡前回顧（10–15分）</td><td>翻閱今日筆記，鞏固長期記憶</td></tr>
+      <tr><td class="t-cell">22:00</td><td>💤 就寢</td><td>8 小時睡眠是記憶固化的關鍵</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TIPS -->
+<div id="tips" class="panel">
+  <div class="sec-title">高效複習技巧</div>
+  <div class="sec-sub">讓每一小時的學習都值得</div>
+  <div class="tips-grid">
+    <div class="tip-card" style="border-top-color:var(--c3)"><h4>📐 數學（翰林）：拆解做題</h4><p>翰林版每節先讀「觀念說明」，再做「隨堂練習」，最後挑戰「習題」。公式必須手寫默背，不能只看書。做錯的題目當天訂正，寫明哪裡錯。</p></div>
+    <div class="tip-card" style="border-top-color:var(--c5)"><h4>🔬 自然（南一）：圖解優先</h4><p>南一版圖表豐富，學細胞/光/力一定要自己手繪示意圖，比死背文字有效 3 倍。理化公式附單位一起背，地科搭配地圖記憶。</p></div>
+    <div class="tip-card" style="border-top-color:var(--c2)"><h4>🔤 英文（翰林）：早背晚複習</h4><p>每天早上背 20 個新單字，睡前快速過昨天的。不規則動詞三態用例句記，翰林版每課單字搭課文句子一起背，效果更好。</p></div>
+    <div class="tip-card" style="border-top-color:var(--c1)"><h4>📖 國文（翰林）：大聲朗讀</h4><p>翰林版文言文一定要大聲讀到流暢。木蘭詩、陋室銘、愛蓮說等短篇必背全文。作文每週一篇，注意起承轉合，請師長批改。</p></div>
+    <div class="tip-card" style="border-top-color:var(--c6)"><h4>🗺️ 社會（翰林）：時間軸+地圖</h4><p>歷史自己畫時間軸貼牆上，地理用空白地圖練習標示，公民做關鍵詞卡片。翰林版每單元末的「重點整理」要全部熟讀。</p></div>
+    <div class="tip-card" style="border-top-color:var(--c4)"><h4>📓 錯題本是寶</h4><p>每次做錯立刻抄進錯題本，標出「錯誤原因」（概念/粗心/不熟）。每週日翻閱一次，是投資報酬率最高的複習方式。</p></div>
+    <div class="tip-card" style="border-top-color:var(--c7)"><h4>✈️ 出國不中斷</h4><p>出國期間維持「英文單字＋國文背誦」各 30 分鐘，保持學習習慣又不累。在旅途中觀察當地地理、文化，也是社會科的活教材！</p></div>
+    <div class="tip-card" style="border-top-color:var(--c5)"><h4>😴 睡眠是最好的複習</h4><p>大腦在睡眠中整合記憶，每晚 8 小時。熬夜讀書多了 2 小時，記憶效率卻下降 40%。規律睡眠比任何技巧都重要。</p></div>
+  </div>
+  <div style="background:var(--ink);color:#fff;border-radius:12px;padding:22px 20px;margin-top:22px;text-align:center">
+    <div style="font-size:24px;margin-bottom:8px">🎯</div>
+    <h3 style="font-size:16px;font-weight:900;margin-bottom:8px;color:var(--c4)">三大核心心態</h3>
+    <p style="color:rgba(255,255,255,.8);font-size:12px;line-height:2;max-width:460px;margin:0 auto">
+      <strong style="color:#fff">① 每天進步一點點</strong>比一次讀 8 小時有效<br>
+      <strong style="color:#fff">② 弄懂比讀完更重要</strong>——懂 10 頁勝過翻過 100 頁<br>
+      <strong style="color:#fff">③ 出國是充電，回來更衝</strong>——放鬆也是學習的一部分
+    </p>
+  </div>
+</div>
+
+</div><!-- .main -->
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+(function() {
+
+// ═══════════════════════════════════════════════════════
+// Firebase 設定
+// ═══════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyAV-UqfDIbuFdPK7G-DtJRmVgMAbQo8dGk",
+  authDomain: "louise-s-study-plan.firebaseapp.com",
+  databaseURL: "https://louise-s-study-plan-default-rtdb.firebaseio.com",
+  projectId: "louise-s-study-plan",
+  storageBucket: "louise-s-study-plan.firebasestorage.app",
+  messagingSenderId: "112116036739",
+  appId: "1:112116036739:web:a90781caf137625ee897b6",
+  measurementId: "G-XE305YDKWG"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const cbRef = db.ref('progress/checkboxes');
+const STORAGE_KEY = 'louise_study_plan_2025';
+const LOCAL_TS_KEY = 'louise_study_plan_ts';
+
+// ═══════════════════════════════════════════════════════
+// 等級系統設定
+// ═══════════════════════════════════════════════════════
+const LEVELS = [
+  { min:0,   max:4,   rank:'🥚 學習蛋',     color:'#94a3b8', desc:'剛開始孵化！' },
+  { min:5,   max:14,  rank:'🐣 破殼新生',    color:'#86efac', desc:'已經有點感覺了！' },
+  { min:15,  max:29,  rank:'🌱 努力幼苗',    color:'#4ade80', desc:'紮下根基，繼續加油！' },
+  { min:30,  max:49,  rank:'⚔️ 初級學者',    color:'#60a5fa', desc:'進入狀況，穩定前進！' },
+  { min:50,  max:64,  rank:'🧙 複習法師',    color:'#a78bfa', desc:'超過一半了，很厲害！' },
+  { min:65,  max:79,  rank:'🦅 知識獵人',    color:'#f59e0b', desc:'大師之路已在眼前！' },
+  { min:80,  max:94,  rank:'🔥 衝刺戰士',    color:'#f97316', desc:'衝破最後防線！' },
+  { min:95,  max:99,  rank:'👑 暑假傳說',    color:'#e63946', desc:'幾乎完美，最後衝刺！' },
+  { min:100, max:100, rank:'🏆 九年級霸主',  color:'#e9c46a', desc:'完美制霸！九年級等著你！' },
+];
+
+const BADGES = [
+  { id:'first',   icon:'🎯', name:'初次打勾',   desc:'完成第一個任務',     trigger: d => d >= 1 },
+  { id:'streak5', icon:'🔥', name:'五連勝',     desc:'完成 5 個任務',      trigger: d => d >= 5 },
+  { id:'math10',  icon:'📐', name:'數學達人',   desc:'完成 10 個數學任務', trigger: (d,s) => s.MA >= 10 },
+  { id:'ch_all',  icon:'📖', name:'國文全通',   desc:'國文章節全部完成',   trigger: (d,s) => s.CH_pct >= 100 },
+  { id:'half',    icon:'⭐', name:'過半成就',   desc:'完成超過 50%',       trigger: d => d >= 50 },
+  { id:'en_all',  icon:'🔤', name:'英文制霸',   desc:'英文章節全部完成',   trigger: (d,s) => s.EN_pct >= 100 },
+  { id:'sc_all',  icon:'🔬', name:'自然通',     desc:'自然章節全部完成',   trigger: (d,s) => s.SC_pct >= 100 },
+  { id:'so_all',  icon:'🗺️', name:'社會達人',   desc:'社會章節全部完成',   trigger: (d,s) => s.SO_pct >= 100 },
+  { id:'week1',   icon:'🗓️', name:'第一週完成', desc:'完成 20 個任務',     trigger: d => d >= 20 },
+  { id:'perfect', icon:'🏆', name:'完美暑假',   desc:'所有任務全數完成',   trigger: d => d >= 100 },
+];
+
+// ═══════════════════════════════════════════════════════
+// 狀態
+// ═══════════════════════════════════════════════════════
+let cbState = {};
+let earnedBadges = new Set();
+
+// ═══════════════════════════════════════════════════════
+// 面板切換
+// ═══════════════════════════════════════════════════════
+window.showPanel = function(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  updateAll();
+};
+
+// ═══════════════════════════════════════════════════════
+// 勾選處理 → Firebase + localStorage 雙重儲存
+// ═══════════════════════════════════════════════════════
+window.saveCB = function(el) {
+  cbState[el.id] = el.checked;
+  saveLocal();
+  saveToFirebase();
+  updateAll();
+  if (el.checked) showCheckAnim(el);
+};
+
+let applyingRemote = false;
+function applyState(state) {
+  applyingRemote = true;
+  Object.entries(state).forEach(([id, checked]) => {
+    const el = document.getElementById(id);
+    if (el) el.checked = !!checked;
+    cbState[id] = !!checked;
+  });
+  applyingRemote = false;
+  updateAll();
+}
+
+// ═══════════════════════════════════════════════════════
+// localStorage（離線備份）
+// ═══════════════════════════════════════════════════════
+function saveLocal() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cbState));
+    localStorage.setItem(LOCAL_TS_KEY, Date.now().toString());
+  } catch(e) {}
+}
+
+function loadLocal() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) applyState(JSON.parse(raw));
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════════
+// Firebase 讀寫
+// ═══════════════════════════════════════════════════════
+function saveToFirebase() {
+  if (applyingRemote) return;
+  cbRef.set({ data: cbState, ts: Date.now() })
+    .catch(e => console.warn('Firebase write error:', e));
+}
+
+function initFirebase() {
+  setStatus('🔄 連線中…', '#f59e0b');
+  cbRef.on('value', snapshot => {
+    const val = snapshot.val();
+    if (val && val.data) {
+      // compare timestamps: take whichever is newer
+      const remoteTs = val.ts || 0;
+      const localTs = parseInt(localStorage.getItem(LOCAL_TS_KEY) || '0');
+      if (remoteTs >= localTs) {
+        applyState(val.data);
+        saveLocal();
+      }
+    }
+    setStatus('🟢 已連線，多裝置即時同步', '#2a9d8f');
+  }, err => {
+    setStatus('🔴 連線失敗，使用本機進度', '#e63946');
+    loadLocal();
+  });
+}
+
+function setStatus(msg, color) {
+  const el = document.getElementById('sync-status');
+  if (el) { el.textContent = msg; el.style.color = color; }
+}
+
+// ═══════════════════════════════════════════════════════
+// 手動匯出/匯入（備用）
+// ═══════════════════════════════════════════════════════
+window.exportCode = function() {
+  const checked = Object.keys(cbState).filter(k => cbState[k]);
+  const code = btoa(JSON.stringify(checked));
+  const inp = document.getElementById('sync-code-input');
+  const box = document.getElementById('sync-code-box');
+  if (inp) inp.value = code;
+  if (box) box.style.display = 'block';
+  try { navigator.clipboard.writeText(code); } catch(e) {}
+};
+
+window.importCode = function() {
+  const inp = document.getElementById('sync-code-input');
+  if (!inp || !inp.value.trim()) return;
+  try {
+    const checked = JSON.parse(atob(inp.value.trim()));
+    const newState = {};
+    checked.forEach(id => newState[id] = true);
+    cbState = newState;
+    applyState(cbState);
+    saveLocal();
+    saveToFirebase();
+    earnedBadges = new Set();
+    updateAll();
+    alert('✅ 進度匯入成功並已同步！');
+  } catch(e) {
+    alert('❌ 進度碼格式錯誤，請重新複製');
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// 計算統計
+// ═══════════════════════════════════════════════════════
+function calcGroup(sel) {
+  const all = document.querySelectorAll(sel);
+  if (!all.length) return { done:0, total:0, pct:0 };
+  const done = Array.from(all).filter(c => c.checked).length;
+  return { done, total:all.length, pct: Math.round(done/all.length*100) };
+}
+
+function getStats() {
+  const cats = ['CH','MA','EN','SC','SO'];
+  const s = { total_done:0, total_all:0 };
+  cats.forEach(k => {
+    const r = calcGroup('[data-cat="'+k+'"]');
+    s[k] = r.done; s[k+'_pct'] = r.pct; s[k+'_total'] = r.total;
+    s.total_done += r.done; s.total_all += r.total;
+  });
+  // schedule tasks
+  const sch = calcGroup('#schedule .task-cb');
+  s.sch_done = sch.done; s.sch_total = sch.total; s.sch_pct = sch.pct;
+  s.overall_pct = s.total_all ? Math.round(s.total_done/s.total_all*100) : 0;
+  return s;
+}
+
+function getLevel(pct) {
+  return LEVELS.find(l => pct >= l.min && pct <= l.max) || LEVELS[0];
+}
+
+// ═══════════════════════════════════════════════════════
+// 更新所有 UI
+// ═══════════════════════════════════════════════════════
+function updateAll() {
+  const s = getStats();
+  updateProgressBars(s);
+  updateHeroPanel(s);
+  checkBadges(s);
+}
+
+function updateProgressBars(s) {
+  const map = { CH:'pCH', MA:'pMA', EN:'pEN', SC:'pSC', SO:'pSO' };
+  Object.entries(map).forEach(([k,id]) => {
+    const b = document.getElementById(id);
+    const t = document.getElementById(id+'t');
+    if (b) b.style.width = s[k+'_pct']+'%';
+    if (t) t.textContent = s[k+'_pct']+'%';
+  });
+  const pb = document.getElementById('pALL');
+  const pt = document.getElementById('pALLt');
+  if (pb) pb.style.width = s.overall_pct+'%';
+  if (pt) pt.textContent = s.overall_pct+'%';
+}
+
+function updateHeroPanel(s) {
+  const lv = getLevel(s.overall_pct);
+  const el = document.getElementById('game-panel');
+  if (!el) return;
+
+  const xpNeeded = (LEVELS.find(l => l.min > s.overall_pct) || LEVELS[LEVELS.length-1]);
+  const xpPct = s.overall_pct;
+
+  el.innerHTML = `
+    <div style="background:var(--ink);border-radius:14px;padding:22px 20px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden;">
+      <div style="position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,${lv.color}22,transparent 60%);pointer-events:none"></div>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div style="font-size:52px;line-height:1">${lv.rank.split(' ')[0]}</div>
+        <div style="flex:1;min-width:180px;">
+          <div style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;margin-bottom:2px">目前等級</div>
+          <div style="font-size:22px;font-weight:900;color:${lv.color}">${lv.rank}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px">${lv.desc}</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:38px;font-weight:700;color:${lv.color};line-height:1">${s.overall_pct}<span style="font-size:16px">%</span></div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4)">總完成度</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px">
+          <span>經驗值 ${s.total_done} / ${s.total_all} 任務</span>
+          <span>${xpPct}%</span>
+        </div>
+        <div style="height:10px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden;">
+          <div style="height:100%;width:${xpPct}%;background:linear-gradient(90deg,${lv.color},${lv.color}cc);border-radius:5px;transition:width .5s"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:16px;flex-wrap:wrap;">
+        ${[
+          {label:'📐數學', pct:s.MA_pct, c:'var(--c3)'},
+          {label:'📖國文', pct:s.CH_pct, c:'var(--c1)'},
+          {label:'🔤英文', pct:s.EN_pct, c:'var(--c2)'},
+          {label:'🔬自然', pct:s.SC_pct, c:'var(--c5)'},
+          {label:'🗺️社會', pct:s.SO_pct, c:'var(--c6)'},
+        ].map(x=>`
+          <div style="flex:1;min-width:70px;text-align:center;">
+            <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:4px">${x.label}</div>
+            <div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">
+              <div style="height:100%;width:${x.pct}%;background:${x.c};border-radius:3px;transition:width .4s"></div>
+            </div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;color:${x.c};margin-top:3px">${x.pct}%</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div style="background:var(--card);border-radius:10px;padding:14px 16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;margin-bottom:3px;">📲 多裝置同步</div>
+          <div id="sync-status" style="font-size:11px;color:#f59e0b;font-weight:600;">🔄 連線中…</div>
+        </div>
+        <button onclick="document.getElementById('sync-code-box').style.display=document.getElementById('sync-code-box').style.display==='none'?'block':'none'" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:7px;font-size:11px;cursor:pointer;">手動備份 ▾</button>
+      </div>
+      <div id="sync-code-box" style="display:none;margin-top:10px;">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">若需手動備份或跨裝置傳進度，可用下方進度碼。</div>
+        <textarea id="sync-code-input" style="width:100%;height:56px;font-size:10px;border:1px solid var(--border);border-radius:6px;padding:6px;resize:none;font-family:monospace;word-break:break-all;" placeholder="進度碼會顯示在此…"></textarea>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button onclick="exportCode()" style="flex:1;padding:6px;background:var(--c3);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">📤 複製進度碼</button>
+          <button onclick="importCode()" style="flex:1;padding:6px;background:var(--c4);border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">📥 套用進度碼</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:13px;font-weight:800;margin-bottom:12px;">🏅 成就徽章</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;">
+      ${BADGES.map(b => {
+        const earned = earnedBadges.has(b.id);
+        return `<div style="background:${earned?'var(--card)':'#f3f4f6'};border:2px solid ${earned?'var(--c4)':'var(--border)'};border-radius:10px;padding:12px;text-align:center;opacity:${earned?1:.45};transition:all .3s">
+          <div style="font-size:26px;margin-bottom:4px">${earned?b.icon:'🔒'}</div>
+          <div style="font-size:11px;font-weight:700;color:${earned?'var(--ink)':'var(--muted)'}">${b.name}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">${b.desc}</div>
+          ${earned?'<div style="font-size:9px;color:var(--c3);margin-top:4px;font-weight:700">✓ 已解鎖</div>':''}
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div style="margin-top:20px;font-size:13px;font-weight:800;margin-bottom:12px;">🗺️ 闖關進度地圖</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+      ${LEVELS.map((l,i) => {
+        const done = s.overall_pct >= l.min;
+        const current = s.overall_pct >= l.min && s.overall_pct <= l.max;
+        return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;${current?'transform:scale(1.15)':''}">
+          <div style="width:42px;height:42px;border-radius:50%;background:${done?l.color:'#e5e7eb'};display:flex;align-items:center;justify-content:center;font-size:18px;border:3px solid ${current?l.color:'transparent'};box-shadow:${current?'0 0 12px '+l.color+'88':'none'};transition:all .3s">${done?l.rank.split(' ')[0]:'⬜'}</div>
+          <div style="font-size:8px;color:${done?'var(--ink)':'var(--muted)'};text-align:center;max-width:44px;line-height:1.2">${l.min}%</div>
+        </div>
+        ${i<LEVELS.length-1?'<div style="flex:1;min-width:8px;height:3px;background:'+( s.overall_pct>l.max ? l.color : '#e5e7eb')+';border-radius:2px;margin-bottom:14px"></div>':''}`;
+      }).join('')}
+    </div>
+  `;
+
+}
+
+// ═══════════════════════════════════════════════════════
+// 成就解鎖
+// ═══════════════════════════════════════════════════════
+function checkBadges(s) {
+  const pct = s.overall_pct;
+  BADGES.forEach(b => {
+    if (!earnedBadges.has(b.id) && b.trigger(pct, s)) {
+      earnedBadges.add(b.id);
+      showBadgeToast(b);
+    }
+  });
+}
+
+function showBadgeToast(b) {
+  const t = document.createElement('div');
+  t.style.cssText = `
+    position:fixed;bottom:24px;right:24px;z-index:9999;
+    background:var(--ink);color:#fff;border-radius:12px;
+    padding:14px 18px;display:flex;align-items:center;gap:12px;
+    box-shadow:0 8px 32px rgba(0,0,0,.3);
+    animation:slideIn .4s ease;max-width:280px;
+  `;
+  t.innerHTML = `
+    <div style="font-size:32px">${b.icon}</div>
+    <div>
+      <div style="font-size:10px;color:var(--c4);font-weight:700;letter-spacing:1px">🏅 成就解鎖！</div>
+      <div style="font-size:14px;font-weight:800;margin-top:2px">${b.name}</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:2px">${b.desc}</div>
+    </div>`;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .5s'; setTimeout(()=>t.remove(),500); }, 3500);
+}
+
+// ═══════════════════════════════════════════════════════
+// 打勾動畫
+// ═══════════════════════════════════════════════════════
+function showCheckAnim(el) {
+  const lbl = el.nextElementSibling;
+  if (!lbl) return;
+  const spark = document.createElement('span');
+  spark.textContent = '+1 ⭐';
+  spark.style.cssText = `
+    position:absolute;font-size:11px;font-weight:700;color:var(--c4);
+    pointer-events:none;animation:floatUp .8s ease forwards;
+    margin-left:4px;z-index:100;
+  `;
+  lbl.style.position = 'relative';
+  lbl.appendChild(spark);
+  setTimeout(() => spark.remove(), 900);
+}
+
+// ═══════════════════════════════════════════════════════
+// CSS 動畫注入
+// ═══════════════════════════════════════════════════════
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideIn { from{transform:translateX(120px);opacity:0} to{transform:translateX(0);opacity:1} }
+  @keyframes floatUp { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(-30px);opacity:0} }
+`;
+document.head.appendChild(style);
+
+// ═══════════════════════════════════════════════════════
+// 初始化：先載入本機進度，再接 Firebase 即時同步
+// ═══════════════════════════════════════════════════════
+loadLocal();   // 先顯示本機快取，讓畫面立即有內容
+updateAll();
+initFirebase(); // 再連 Firebase，有更新自動覆蓋
+
+})(); // end IIFE
+</script>
+</body>
+</html>
