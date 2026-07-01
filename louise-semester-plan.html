@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>學期讀書計畫產生器</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
+:root{
+  --ink:#1a1a2e;--bg:#f4f3ef;--card:#fff;
+  --c1:#e63946;--c2:#457b9d;--c3:#2a9d8f;--c4:#e9c46a;
+  --c5:#9b5de5;--c6:#f4a261;--c7:#06d6a0;
+  --muted:#6b7280;--border:#e5e7eb;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+.hero{background:var(--ink);color:#fff;padding:40px 20px 32px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(255,255,255,.03) 40px,rgba(255,255,255,.03) 41px);}
+.hero-badge{display:inline-block;background:var(--c5);color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;padding:3px 12px;border-radius:2px;margin-bottom:14px;}
+.hero h1{font-size:clamp(22px,4vw,38px);font-weight:900;line-height:1.2;letter-spacing:-1px;margin-bottom:8px;}
+.hero h1 span{color:var(--c4);}
+.hero p{color:rgba(255,255,255,.6);font-size:13px;}
+.tabs-wrap{background:var(--ink);position:sticky;top:0;z-index:100;border-bottom:2px solid rgba(255,255,255,.1);}
+.tabs{display:flex;overflow-x:auto;padding:0 14px;max-width:1200px;margin:0 auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex-shrink:0;padding:11px 16px;font-size:12px;font-weight:500;color:rgba(255,255,255,.5);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab:hover{color:rgba(255,255,255,.85);}
+.tab.active{color:var(--c4);border-bottom-color:var(--c4);}
+.tab.disabled{opacity:.3;pointer-events:none;}
+.main{max-width:1200px;margin:0 auto;padding:28px 14px 60px;}
+.panel{display:none;}
+.panel.active{display:block;}
+.sec-title{font-size:19px;font-weight:900;margin-bottom:4px;letter-spacing:-.5px;}
+.sec-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.info-box{background:#eff6ff;border-left:4px solid var(--c2);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:12.5px;color:#1e40af;line-height:1.9;}
+.info-box strong{font-weight:700;}
+.warn-box{background:#fff7ed;border-left:4px solid var(--c6);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:12.5px;color:#92400e;line-height:1.9;}
+
+/* FORM ELEMENTS */
+.form-group{margin-bottom:16px;}
+.form-label{font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;}
+.form-input, .form-select, .form-textarea{
+  width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;
+  font-size:13px;font-family:inherit;background:#fff;color:var(--ink);
+}
+.form-textarea{resize:vertical;min-height:60px;}
+.form-row{display:flex;gap:10px;flex-wrap:wrap;}
+.form-row > *{flex:1;min-width:140px;}
+.btn{
+  padding:10px 20px;border:none;border-radius:8px;font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;
+}
+.btn-primary{background:var(--c3);color:#fff;}
+.btn-primary:hover{background:#238b7e;}
+.btn-secondary{background:var(--bg);color:var(--ink);border:1px solid var(--border);}
+.btn-secondary:hover{background:#e5e5e0;}
+.btn-danger{background:#fff1f2;color:var(--c1);}
+.btn-danger:hover{background:#fecdd3;}
+.btn-block{width:100%;justify-content:center;}
+.btn-sm{padding:6px 12px;font-size:11px;}
+
+/* CARDS */
+.card{background:var(--card);border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.card-title{font-size:14px;font-weight:800;}
+
+/* SUBJECT PILL SELECTOR */
+.subject-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.subject-pill{
+  padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;
+  border:2px solid var(--border);background:#fff;color:var(--muted);transition:all .15s;
+  display:flex;align-items:center;gap:6px;
+}
+.subject-pill.active{border-color:currentColor;}
+.subject-pill[data-subject="CH"].active{background:#fff1f2;color:var(--c1);border-color:var(--c1);}
+.subject-pill[data-subject="MA"].active{background:#ecfdf5;color:var(--c3);border-color:var(--c3);}
+.subject-pill[data-subject="EN"].active{background:#eff6ff;color:var(--c2);border-color:var(--c2);}
+.subject-pill[data-subject="SC"].active{background:#f5f3ff;color:var(--c5);border-color:var(--c5);}
+.subject-pill[data-subject="SO"].active{background:#fff7ed;color:var(--c6);border-color:var(--c6);}
+
+/* LESSON LIST */
+.lesson-list{list-style:none;margin-bottom:12px;}
+.lesson-item{
+  display:flex;align-items:center;gap:10px;padding:8px 12px;
+  background:var(--bg);border-radius:8px;margin-bottom:6px;font-size:12.5px;
+}
+.lesson-item .lesson-num{
+  font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;
+  background:var(--card);color:var(--muted);padding:2px 8px;border-radius:4px;flex-shrink:0;
+}
+.lesson-item .lesson-text{flex:1;}
+.lesson-item .lesson-del{color:var(--c1);cursor:pointer;font-size:13px;padding:2px 6px;}
+
+/* SPECIAL PERIOD CARD */
+.special-period{
+  background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px;margin-bottom:10px;
+}
+.special-period-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+
+/* PROGRESS STEPS */
+.steps{display:flex;align-items:center;gap:0;margin-bottom:24px;overflow-x:auto;padding-bottom:4px;}
+.step{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.step-circle{
+  width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--muted);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+  font-family:'Space Grotesk',sans-serif;flex-shrink:0;
+}
+.step.active .step-circle{background:var(--c3);color:#fff;}
+.step.done .step-circle{background:var(--c3);color:#fff;}
+.step-label{font-size:11px;color:var(--muted);white-space:nowrap;}
+.step.active .step-label{color:var(--ink);font-weight:700;}
+.step-line{width:24px;height:2px;background:var(--border);margin:0 6px;flex-shrink:0;}
+.step-line.done{background:var(--c3);}
+
+@media(max-width:600px){
+  .form-row{flex-direction:column;}
+  .form-row > *{min-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">📚 學期讀書計畫產生器</div>
+  <h1>建立你的<br><span>專屬讀書計畫</span></h1>
+  <p>輸入學期日期與章節，自動排出每日複習表</p>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <div class="tab active" onclick="showPanel('setup',this)">⚙️ 建立計畫</div>
+    <div class="tab disabled" id="tab-plan" onclick="showPanel('plan',this)">📅 每日計畫</div>
+    <div class="tab disabled" id="tab-game" onclick="showPanel('game',this)">🎮 闖關成就</div>
+    <div class="tab disabled" id="tab-parent" onclick="showPanel('parent',this)">👨‍👩‍👧 家長確認</div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════ SETUP PANEL ═══════════════════════ -->
+<div id="setup" class="panel active">
+
+  <div class="steps">
+    <div class="step active" data-step="1"><div class="step-circle">1</div><div class="step-label">基本資訊</div></div>
+    <div class="step-line"></div>
+    <div class="step" data-step="2"><div class="step-circle">2</div><div class="step-label">科目章節</div></div>
+    <div class="step-line"></div>
+    <div class="step" data-step="3"><div class="step-circle">3</div><div class="step-label">特殊期間</div></div>
+    <div class="step-line"></div>
+    <div class="step" data-step="4"><div class="step-circle">4</div><div class="step-label">產生計畫</div></div>
+  </div>
+
+  <!-- STEP 1: 基本資訊 -->
+  <div class="setup-step" id="step-1">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">📋 學期基本資訊</div>
+      <div class="form-group">
+        <label class="form-label">計畫名稱</label>
+        <input type="text" id="plan-name" class="form-input" placeholder="例如：九年級上學期讀書計畫">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">開始日期</label>
+          <input type="date" id="plan-start" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">結束日期</label>
+          <input type="date" id="plan-end" class="form-input">
+        </div>
+      </div>
+      <div id="plan-duration-preview" class="info-box" style="display:none;"></div>
+      <div class="form-group">
+        <label class="form-label">週日是否安排複習</label>
+        <div class="form-row">
+          <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;background:var(--bg);padding:10px 12px;border-radius:8px;cursor:pointer;flex:1;">
+            <input type="radio" name="sunday-mode" value="light" checked> 週日排 2 小時輕量複習
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;background:var(--bg);padding:10px 12px;border-radius:8px;cursor:pointer;flex:1;">
+            <input type="radio" name="sunday-mode" value="rest"> 週日完全休息
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">平日每天學習時數（不含特殊期間）</label>
+        <select id="daily-hours" class="form-select">
+          <option value="2">2 小時</option>
+          <option value="3" selected>3 小時</option>
+          <option value="4">4 小時</option>
+          <option value="5">5 小時</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="goToStep(2)">下一步：新增科目章節 →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: 科目章節 -->
+  <div class="setup-step" id="step-2" style="display:none;">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">📚 新增科目與章節</div>
+      <div class="sec-sub" style="margin-bottom:14px;">選擇科目，逐課輸入課名，全部科目都設定完後按下一步</div>
+
+      <div class="subject-pills" id="subject-pills">
+        <div class="subject-pill active" data-subject="CH" onclick="selectSubject('CH')">📖 國文</div>
+        <div class="subject-pill" data-subject="MA" onclick="selectSubject('MA')">📐 數學</div>
+        <div class="subject-pill" data-subject="EN" onclick="selectSubject('EN')">🔤 英文</div>
+        <div class="subject-pill" data-subject="SC" onclick="selectSubject('SC')">🔬 自然</div>
+        <div class="subject-pill" data-subject="SO" onclick="selectSubject('SO')">🗺️ 社會</div>
+      </div>
+
+      <div class="form-row" style="align-items:flex-end;">
+        <div class="form-group" style="margin-bottom:0;flex:2;">
+          <label class="form-label">課名 / 章節內容</label>
+          <input type="text" id="lesson-input" class="form-input" placeholder="例如：第1課 夏夜" onkeydown="if(event.key==='Enter')addLesson()">
+        </div>
+        <button class="btn btn-primary" style="margin-bottom:0;height:38px;" onclick="addLesson()">➕ 新增</button>
+      </div>
+
+      <div style="margin-top:16px;">
+        <div id="lesson-list-header" style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;"></div>
+        <ul class="lesson-list" id="lesson-list"></ul>
+      </div>
+
+      <div id="subject-summary" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);"></div>
+
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button class="btn btn-secondary" onclick="goToStep(1)">← 上一步</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="goToStep(3)">下一步：設定特殊期間 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: 特殊期間 -->
+  <div class="setup-step" id="step-3" style="display:none;">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:6px;">✈️ 特殊期間設定（選填）</div>
+      <div class="sec-sub" style="margin-bottom:14px;">例如出遊、段考週、連假，可設定該期間每天的學習時數不同</div>
+
+      <div id="special-periods-list"></div>
+
+      <div class="card" style="background:var(--bg);box-shadow:none;margin-bottom:0;">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">期間名稱</label>
+            <input type="text" id="sp-name" class="form-input" placeholder="例如：出國旅遊">
+          </div>
+          <div class="form-group">
+            <label class="form-label">每天學習時數</label>
+            <select id="sp-hours" class="form-select">
+              <option value="0">0 小時（完全暫停）</option>
+              <option value="1" selected>1 小時</option>
+              <option value="2">2 小時</option>
+              <option value="3">3 小時</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">開始日期</label>
+            <input type="date" id="sp-start" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">結束日期</label>
+            <input type="date" id="sp-end" class="form-input">
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-block" onclick="addSpecialPeriod()">➕ 加入這段特殊期間</button>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button class="btn btn-secondary" onclick="goToStep(2)">← 上一步</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="goToStep(4)">下一步：預覽並產生 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: 產生計畫 -->
+  <div class="setup-step" id="step-4" style="display:none;">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">🎯 確認並產生計畫</div>
+      <div id="final-preview"></div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button class="btn btn-secondary" onclick="goToStep(3)">← 上一步</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="generatePlan()">✅ 產生每日計畫表</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════ PLAN PANEL (每日計畫，稍後填入) ═══════════════════════ -->
+<div id="plan" class="panel">
+  <div class="sec-title">每日複習計畫</div>
+  <div class="sec-sub" id="plan-subtitle"></div>
+  <div id="plan-content"></div>
+</div>
+
+<!-- ═══════════════════════ GAME PANEL ═══════════════════════ -->
+<div id="game" class="panel">
+  <div class="sec-title">🎮 闖關成就系統</div>
+  <div class="sec-sub">每完成一個任務就獲得經驗值，解鎖徽章、升級稱號！</div>
+  <div id="today-card"></div>
+  <div id="game-panel"></div>
+</div>
+
+<!-- ═══════════════════════ PARENT PANEL ═══════════════════════ -->
+<div id="parent" class="panel">
+  <div class="sec-title">👨‍👩‍👧 家長確認欄</div>
+  <div class="sec-sub">每週家長簽核確認學習狀況，點選即儲存</div>
+  <div id="parent-grid"></div>
+</div>
+
+</div><!-- .main -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+(function() {
+
+// ═══════════════════════════════════════════════════════
+// Firebase 設定（獨立路徑，跟暑假計畫互不影響）
+// ═══════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyAV-UqfDIbuFdPK7G-DtJRmVgMAbQo8dGk",
+  authDomain: "louise-s-study-plan.firebaseapp.com",
+  databaseURL: "https://louise-s-study-plan-default-rtdb.firebaseio.com",
+  projectId: "louise-s-study-plan",
+  storageBucket: "louise-s-study-plan.firebasestorage.app",
+  messagingSenderId: "112116036739",
+  appId: "1:112116036739:web:a90781caf137625ee897b6",
+  measurementId: "G-XE305YDKWG"
+};
+let db = null;
+let firebaseReady = false;
+try {
+  if (typeof firebase !== 'undefined') {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    firebaseReady = true;
+  }
+} catch(e) {
+  console.warn('Firebase 初始化失敗，將僅使用本機儲存：', e);
+}
+
+const STORAGE_PREFIX = 'louise_semester_';
+const CONFIG_KEY = STORAGE_PREFIX + 'config';
+const CHECKS_KEY = STORAGE_PREFIX + 'checks';
+
+const SUBJECT_META = {
+  CH: { icon:'📖', name:'國文', color:'var(--c1)', bg:'#fff1f2' },
+  MA: { icon:'📐', name:'數學', color:'var(--c3)', bg:'#ecfdf5' },
+  EN: { icon:'🔤', name:'英文', color:'var(--c2)', bg:'#eff6ff' },
+  SC: { icon:'🔬', name:'自然', color:'var(--c5)', bg:'#f5f3ff' },
+  SO: { icon:'🗺️', name:'社會', color:'var(--c6)', bg:'#fff7ed' },
+};
+
+// ═══════════════════════════════════════════════════════
+// 全域狀態
+// ═══════════════════════════════════════════════════════
+let planConfig = {
+  name: '', start: '', end: '', sundayMode: 'light', dailyHours: 3,
+  subjects: { CH: [], MA: [], EN: [], SC: [], SO: [] },
+  specialPeriods: [], // [{name, start, end, hours}]
+  dailyPlan: [], // generated: [{date, dow, tasks:[{id,subject,content,startTime,endTime}]}]
+};
+let checksState = {}; // {taskId: true/false}
+let currentSubjectTab = 'CH';
+let earnedBadges = new Set();
+
+// ═══════════════════════════════════════════════════════
+// STEP NAVIGATION
+// ═══════════════════════════════════════════════════════
+window.goToStep = function(n) {
+  document.querySelectorAll('.setup-step').forEach(s => s.style.display = 'none');
+  document.getElementById('step-'+n).style.display = 'block';
+  document.querySelectorAll('.step').forEach(s => {
+    const step = parseInt(s.dataset.step);
+    s.classList.toggle('active', step === n);
+    s.classList.toggle('done', step < n);
+  });
+  document.querySelectorAll('.step-line').forEach((l,i) => {
+    l.classList.toggle('done', i < n-1);
+  });
+  if (n === 1) saveStep1();
+  if (n === 3) { saveStep1(); renderSpecialPeriods(); }
+  if (n === 4) { saveStep1(); renderFinalPreview(); }
+};
+
+function saveStep1() {
+  planConfig.name = document.getElementById('plan-name').value.trim() || '我的讀書計畫';
+  planConfig.start = document.getElementById('plan-start').value;
+  planConfig.end = document.getElementById('plan-end').value;
+  planConfig.sundayMode = document.querySelector('input[name="sunday-mode"]:checked').value;
+  planConfig.dailyHours = parseInt(document.getElementById('daily-hours').value);
+}
+
+// duration preview on date change
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'plan-start' || e.target.id === 'plan-end') {
+    const s = document.getElementById('plan-start').value;
+    const en = document.getElementById('plan-end').value;
+    const box = document.getElementById('plan-duration-preview');
+    if (s && en) {
+      const days = Math.round((new Date(en) - new Date(s)) / 86400000) + 1;
+      const weeks = Math.ceil(days/7);
+      box.style.display = 'block';
+      box.innerHTML = `📅 共 <strong>${days}</strong> 天，約 <strong>${weeks}</strong> 週`;
+    }
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// STEP 2: 科目章節管理
+// ═══════════════════════════════════════════════════════
+window.selectSubject = function(subj) {
+  currentSubjectTab = subj;
+  document.querySelectorAll('.subject-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.subject === subj);
+  });
+  renderLessonList();
+};
+
+window.addLesson = function() {
+  const input = document.getElementById('lesson-input');
+  const text = input.value.trim();
+  if (!text) return;
+  planConfig.subjects[currentSubjectTab].push(text);
+  input.value = '';
+  input.focus();
+  renderLessonList();
+};
+
+window.deleteLesson = function(subj, idx) {
+  planConfig.subjects[subj].splice(idx, 1);
+  renderLessonList();
+};
+
+function renderLessonList() {
+  const meta = SUBJECT_META[currentSubjectTab];
+  const lessons = planConfig.subjects[currentSubjectTab];
+  document.getElementById('lesson-list-header').innerHTML =
+    `${meta.icon} ${meta.name} 章節清單（共 ${lessons.length} 課）`;
+
+  const list = document.getElementById('lesson-list');
+  if (lessons.length === 0) {
+    list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;">尚未新增課程，請在上方輸入並按新增</div>`;
+  } else {
+    list.innerHTML = lessons.map((l, i) => `
+      <li class="lesson-item">
+        <span class="lesson-num">${i+1}</span>
+        <span class="lesson-text">${l}</span>
+        <span class="lesson-del" onclick="deleteLesson('${currentSubjectTab}',${i})">🗑️</span>
+      </li>`).join('');
+  }
+
+  // subject summary pills
+  const summary = document.getElementById('subject-summary');
+  summary.innerHTML = Object.entries(planConfig.subjects).map(([k,v]) => {
+    const m = SUBJECT_META[k];
+    return `<div style="font-size:11px;padding:5px 12px;border-radius:14px;background:${m.bg};color:${m.color};font-weight:700;">${m.icon} ${m.name} ${v.length} 課</div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// STEP 3: 特殊期間
+// ═══════════════════════════════════════════════════════
+window.addSpecialPeriod = function() {
+  const name = document.getElementById('sp-name').value.trim();
+  const start = document.getElementById('sp-start').value;
+  const end = document.getElementById('sp-end').value;
+  const hours = parseInt(document.getElementById('sp-hours').value);
+  if (!name || !start || !end) { alert('請填寫完整的期間名稱與日期'); return; }
+  if (new Date(start) > new Date(end)) { alert('結束日期需晚於開始日期'); return; }
+  planConfig.specialPeriods.push({ name, start, end, hours });
+  document.getElementById('sp-name').value = '';
+  document.getElementById('sp-start').value = '';
+  document.getElementById('sp-end').value = '';
+  renderSpecialPeriods();
+};
+
+window.deleteSpecialPeriod = function(idx) {
+  planConfig.specialPeriods.splice(idx, 1);
+  renderSpecialPeriods();
+};
+
+function renderSpecialPeriods() {
+  const el = document.getElementById('special-periods-list');
+  if (planConfig.specialPeriods.length === 0) {
+    el.innerHTML = '';
+    return;
+  }
+  el.innerHTML = planConfig.specialPeriods.map((sp, i) => `
+    <div class="special-period">
+      <div class="special-period-header">
+        <div style="font-size:13px;font-weight:700;">✈️ ${sp.name}</div>
+        <span onclick="deleteSpecialPeriod(${i})" style="color:var(--c1);cursor:pointer;font-size:14px;">🗑️</span>
+      </div>
+      <div style="font-size:11.5px;color:#92400e;">${sp.start} ～ ${sp.end}｜每天 ${sp.hours} 小時</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// STEP 4: 預覽
+// ═══════════════════════════════════════════════════════
+function renderFinalPreview() {
+  const totalLessons = Object.values(planConfig.subjects).reduce((s,a) => s+a.length, 0);
+  const days = planConfig.start && planConfig.end ?
+    Math.round((new Date(planConfig.end) - new Date(planConfig.start))/86400000)+1 : 0;
+
+  document.getElementById('final-preview').innerHTML = `
+    <div class="info-box">
+      <strong>📋 計畫名稱：</strong>${planConfig.name || '（未命名）'}<br>
+      <strong>📅 日期範圍：</strong>${planConfig.start || '?'} ～ ${planConfig.end || '?'}（共 ${days} 天）<br>
+      <strong>⏰ 平日時數：</strong>每天 ${planConfig.dailyHours} 小時<br>
+      <strong>☀️ 週日安排：</strong>${planConfig.sundayMode === 'light' ? '2 小時輕量複習' : '完全休息'}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+      ${Object.entries(planConfig.subjects).map(([k,v]) => {
+        const m = SUBJECT_META[k];
+        return `<div style="font-size:11px;padding:6px 14px;border-radius:14px;background:${m.bg};color:${m.color};font-weight:700;">${m.icon} ${m.name} ${v.length} 課</div>`;
+      }).join('')}
+    </div>
+    ${totalLessons === 0 ? '<div class="warn-box">⚠️ 尚未新增任何章節，建議回到上一步新增後再產生計畫</div>' : ''}
+    ${planConfig.specialPeriods.length > 0 ? `
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px;">✈️ 特殊期間（${planConfig.specialPeriods.length}）</div>
+      ${planConfig.specialPeriods.map(sp => `<div style="font-size:11.5px;color:var(--muted);margin-bottom:4px;">• ${sp.name}：${sp.start}～${sp.end}（${sp.hours}h/天）</div>`).join('')}
+    ` : ''}
+  `;
+}
+
+// ═══════════════════════════════════════════════════════
+// 排程引擎：把所有章節分配到日期範圍內
+// ═══════════════════════════════════════════════════════
+function getSpecialPeriodFor(dateStr) {
+  return planConfig.specialPeriods.find(sp => dateStr >= sp.start && dateStr <= sp.end);
+}
+
+function getHoursForDate(dateStr, dow) {
+  const sp = getSpecialPeriodFor(dateStr);
+  if (sp) return sp.hours;
+  if (dow === 0) return planConfig.sundayMode === 'light' ? 2 : 0;
+  return planConfig.dailyHours;
+}
+
+// 每小時可完成幾課（假設一課約 50-60 分鐘，1小時=1課；不足1小時的時段忽略）
+function generateDailyPlan() {
+  const { start, end, subjects } = planConfig;
+  if (!start || !end) { alert('請先設定開始與結束日期'); return false; }
+
+  const dates = [];
+  let cur = new Date(start+'T00:00:00');
+  const endD = new Date(end+'T00:00:00');
+  while (cur <= endD) {
+    dates.push(cur.toISOString().slice(0,10));
+    cur.setDate(cur.getDate()+1);
+  }
+  if (dates.length === 0) { alert('日期範圍無效'); return false; }
+
+  // build a flat queue of all lessons, subject round-robin (interleaved)
+  const subjectKeys = Object.keys(subjects).filter(k => subjects[k].length > 0);
+  if (subjectKeys.length === 0) { alert('請至少新增一個科目的章節'); return false; }
+
+  const queues = {};
+  subjectKeys.forEach(k => queues[k] = subjects[k].map((text,i) => ({ subject:k, text, idx:i })));
+
+  // interleave round-robin so subjects distribute evenly across the term
+  const flatQueue = [];
+  let anyLeft = true;
+  while (anyLeft) {
+    anyLeft = false;
+    for (const k of subjectKeys) {
+      if (queues[k].length > 0) {
+        flatQueue.push(queues[k].shift());
+        anyLeft = true;
+      }
+    }
+  }
+
+  // assign to dates based on available hours per day
+  const dailyPlan = [];
+  let qi = 0;
+  const dowNames = ['日','一','二','三','四','五','六'];
+
+  dates.forEach(d => {
+    const dateObj = new Date(d+'T00:00:00');
+    const dow = dateObj.getDay();
+    const hours = getHoursForDate(d, dow);
+    const sp = getSpecialPeriodFor(d);
+    const tasks = [];
+
+    for (let h = 0; h < hours && qi < flatQueue.length; h++) {
+      const item = flatQueue[qi++];
+      const meta = SUBJECT_META[item.subject];
+      const startHour = 9 + h; // simple sequential blocks starting at 9am
+      const taskId = 'sp_' + d.replace(/-/g,'') + '_' + h;
+      tasks.push({
+        id: taskId,
+        subject: item.subject,
+        content: item.text,
+        startTime: String(startHour).padStart(2,'0')+':00',
+        endTime: String(startHour+1).padStart(2,'0')+':00',
+      });
+    }
+
+    dailyPlan.push({
+      date: d,
+      dow: dowNames[dow],
+      month: dateObj.getMonth()+1,
+      day: dateObj.getDate(),
+      isSunday: dow === 0,
+      specialPeriodName: sp ? sp.name : null,
+      hours,
+      tasks,
+    });
+  });
+
+  // if lessons remain unassigned (ran out of days), warn
+  const remaining = flatQueue.length - qi;
+  planConfig.dailyPlan = dailyPlan;
+  planConfig.unassignedCount = remaining;
+  return true;
+}
+
+window.generatePlan = function() {
+  saveStep1();
+  const ok = generateDailyPlan();
+  if (!ok) return;
+
+  saveConfig();
+  renderPlanPanel();
+  renderGamePanel();
+  renderParentPanel();
+
+  // unlock other tabs
+  ['tab-plan','tab-game','tab-parent'].forEach(id => {
+    document.getElementById(id).classList.remove('disabled');
+  });
+  showPanel('plan', document.querySelector('.tab[onclick*="plan"]'));
+
+  if (planConfig.unassignedCount > 0) {
+    setTimeout(() => alert(`⚠️ 章節數量超過可用時數，還有 ${planConfig.unassignedCount} 課未排入計畫。建議延長日期範圍或增加每日時數。`), 300);
+  }
+};
+
+
+// ═══════════════════════════════════════════════════════
+// 每日計畫渲染
+// ═══════════════════════════════════════════════════════
+function renderPlanPanel() {
+  const sub = document.getElementById('plan-subtitle');
+  sub.textContent = `${planConfig.name} ｜ ${planConfig.start} ～ ${planConfig.end}`;
+
+  const content = document.getElementById('plan-content');
+
+  // group by week (Sun-Sat)
+  const weeks = [];
+  let curWeek = [];
+  planConfig.dailyPlan.forEach((day, i) => {
+    curWeek.push(day);
+    const dateObj = new Date(day.date+'T00:00:00');
+    if (dateObj.getDay() === 6 || i === planConfig.dailyPlan.length-1) {
+      weeks.push(curWeek);
+      curWeek = [];
+    }
+  });
+
+  content.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+      <button onclick="jumpToToday()" style="padding:8px 16px;background:var(--ink);color:var(--c4);border:none;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;">📍 跳到今天</button>
+      <button onclick="if(confirm('確定要重新設定計畫嗎？目前的打勾進度會保留但計畫內容會重新產生。')){showPanel('setup', document.querySelector('.tab[onclick*=setup]'));goToStep(1);}" style="padding:8px 16px;background:var(--bg);border:1px solid var(--border);border-radius:20px;font-size:12px;cursor:pointer;">⚙️ 重新設定計畫</button>
+    </div>
+    <div class="legend" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+      ${Object.entries(SUBJECT_META).map(([k,m]) => `
+        <div style="display:flex;align-items:center;gap:5px;font-size:10.5px;color:#4b5563;background:var(--card);padding:3px 9px;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.04);">
+          <div style="width:8px;height:8px;border-radius:50%;background:${m.color}"></div>${m.name}
+        </div>`).join('')}
+    </div>
+    ${weeks.map((week, wi) => `
+      <div style="margin-bottom:24px;">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:.5px;padding:4px 0;border-bottom:1px solid var(--border);">
+          第${wi+1}週 ${week[0].month}/${week[0].day} － ${week[week.length-1].month}/${week[week.length-1].day}
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;">
+          ${week.map(day => renderDayCard(day)).join('')}
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderDayCard(day) {
+  if (day.tasks.length === 0) {
+    return `
+    <div style="text-align:center;padding:18px 10px;background:var(--card);border-radius:9px;border-left:4px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,.05);" data-date="${day.date}">
+      <div style="font-size:22px;">${day.isSunday ? '😴' : '🎉'}</div>
+      <div style="font-size:11px;font-weight:700;color:var(--muted);margin-top:6px;">週${day.dow} ${day.month}/${day.day}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px;">${day.specialPeriodName || '休息'}</div>
+    </div>`;
+  }
+
+  const bgStyle = day.specialPeriodName ? 'background:#fffbeb;' : (day.isSunday ? 'background:#fffbeb;' : '');
+  const borderColor = day.tasks[0] ? SUBJECT_META[day.tasks[0].subject].color : 'var(--border)';
+
+  const itemsHtml = day.tasks.map(t => {
+    const meta = SUBJECT_META[t.subject];
+    const checked = checksState[t.id] ? 'checked' : '';
+    return `
+    <input type="checkbox" class="task-cb" id="cb_${t.id}" ${checked} onchange="toggleCheck('${t.id}', this.checked)">
+    <label for="cb_${t.id}" class="task-label" style="display:flex;align-items:flex-start;gap:7px;cursor:pointer;font-size:11.5px;line-height:1.55;width:100%;padding:4px 0;border-bottom:1px dashed var(--border);">
+      <span class="cb-box" style="flex-shrink:0;width:15px;height:15px;border:2px solid #d1d5db;border-radius:3px;margin-top:1px;display:flex;align-items:center;justify-content:center;background:${checked?'var(--c3)':'#fff'};border-color:${checked?'var(--c3)':'#d1d5db'};color:#fff;font-size:9px;font-weight:900;">${checked?'✓':''}</span>
+      <span style="display:flex;align-items:flex-start;gap:5px;flex:1;flex-wrap:wrap;${checked?'text-decoration:line-through;color:var(--muted);opacity:.65':''}">
+        <span style="font-family:'Space Grotesk',sans-serif;font-size:8.5px;font-weight:600;background:var(--bg);color:var(--muted);padding:1px 4px;border-radius:2px;">${t.startTime}-${t.endTime}</span>
+        <span style="color:${meta.color}">${meta.icon}</span>${t.content}
+      </span>
+    </label>`;
+  }).join('');
+
+  return `
+  <div class="day-card" style="background:var(--card);border-radius:9px;padding:11px 12px;border-left:4px solid ${borderColor};box-shadow:0 1px 2px rgba(0,0,0,.05);${bgStyle}" data-date="${day.date}">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:7px;">週${day.dow} ${day.month}/${day.day}${day.specialPeriodName?' ✈️':day.isSunday?' ☀️':''}</div>
+    ${itemsHtml}
+  </div>`;
+}
+
+window.toggleCheck = function(taskId, checked) {
+  checksState[taskId] = checked;
+  saveChecks();
+  if (checked) {
+    const el = document.getElementById('cb_'+taskId);
+    if (el) showCheckAnim(el);
+  }
+  renderPlanPanel(); // re-render to update strikethrough
+  renderGamePanel();
+  renderParentPanel();
+};
+
+function showCheckAnim(cbEl) {
+  const lbl = cbEl.nextElementSibling;
+  if (!lbl) return;
+  const spark = document.createElement('span');
+  spark.textContent = '+1 ⭐';
+  spark.style.cssText = 'position:absolute;font-size:11px;font-weight:700;color:var(--c4);pointer-events:none;animation:floatUp .8s ease forwards;margin-left:4px;z-index:100;';
+  lbl.style.position = 'relative';
+  lbl.appendChild(spark);
+  setTimeout(() => spark.remove(), 900);
+}
+
+function getTodayStr() {
+  const t = new Date();
+  return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+}
+
+window.jumpToToday = function() {
+  const todayStr = getTodayStr();
+  setTimeout(() => {
+    let card = document.querySelector(`#plan-content [data-date="${todayStr}"]`);
+    if (!card) {
+      const all = Array.from(document.querySelectorAll('#plan-content [data-date]'));
+      const future = all.filter(c => c.getAttribute('data-date') >= todayStr);
+      card = future[0] || all[all.length-1];
+    }
+    if (card) {
+      card.scrollIntoView({ behavior:'smooth', block:'center' });
+      card.style.transition = 'box-shadow .3s';
+      card.style.boxShadow = '0 0 0 3px var(--c4)';
+      setTimeout(() => { card.style.boxShadow = ''; }, 2000);
+    }
+  }, 100);
+};
+
+
+// ═══════════════════════════════════════════════════════
+// 遊戲化：等級系統
+// ═══════════════════════════════════════════════════════
+const LEVELS = [
+  { min:0,   max:4,   rank:'🥚 學習蛋',     color:'#94a3b8', desc:'剛開始孵化！' },
+  { min:5,   max:14,  rank:'🐣 破殼新生',    color:'#86efac', desc:'已經有點感覺了！' },
+  { min:15,  max:29,  rank:'🌱 努力幼苗',    color:'#4ade80', desc:'紮下根基，繼續加油！' },
+  { min:30,  max:49,  rank:'⚔️ 初級學者',    color:'#60a5fa', desc:'進入狀況，穩定前進！' },
+  { min:50,  max:64,  rank:'🧙 複習法師',    color:'#a78bfa', desc:'超過一半了，很厲害！' },
+  { min:65,  max:79,  rank:'🦅 知識獵人',    color:'#f59e0b', desc:'大師之路已在眼前！' },
+  { min:80,  max:94,  rank:'🔥 衝刺戰士',    color:'#f97316', desc:'衝破最後防線！' },
+  { min:95,  max:99,  rank:'👑 學期傳說',    color:'#e63946', desc:'幾乎完美，最後衝刺！' },
+  { min:100, max:100, rank:'🏆 學期霸主',    color:'#e9c46a', desc:'完美制霸！' },
+];
+
+const BADGES = [
+  { id:'first',   icon:'🎯', name:'初次打勾',   desc:'完成第一個任務',     trigger: d => d >= 1 },
+  { id:'streak5', icon:'🔥', name:'五連勝',     desc:'完成 5 個任務',      trigger: d => d >= 5 },
+  { id:'half',    icon:'⭐', name:'過半成就',   desc:'完成超過 50%',       trigger: d => d >= 50 },
+  { id:'ch_all',  icon:'📖', name:'國文全通',   desc:'國文全部完成',       trigger: (d,s) => s.CH_pct >= 100 && s.CH_total > 0 },
+  { id:'ma_all',  icon:'📐', name:'數學全通',   desc:'數學全部完成',       trigger: (d,s) => s.MA_pct >= 100 && s.MA_total > 0 },
+  { id:'en_all',  icon:'🔤', name:'英文全通',   desc:'英文全部完成',       trigger: (d,s) => s.EN_pct >= 100 && s.EN_total > 0 },
+  { id:'sc_all',  icon:'🔬', name:'自然全通',   desc:'自然全部完成',       trigger: (d,s) => s.SC_pct >= 100 && s.SC_total > 0 },
+  { id:'so_all',  icon:'🗺️', name:'社會全通',   desc:'社會全部完成',       trigger: (d,s) => s.SO_pct >= 100 && s.SO_total > 0 },
+  { id:'week1',   icon:'🗓️', name:'首週完成',   desc:'完成 15 個任務',     trigger: d => d >= 15 },
+  { id:'perfect', icon:'🏆', name:'完美達成',   desc:'所有任務全數完成',   trigger: d => d >= 100 },
+];
+
+function getStats() {
+  const s = { total_done:0, total_all:0 };
+  Object.keys(SUBJECT_META).forEach(k => {
+    let total=0, done=0;
+    planConfig.dailyPlan.forEach(day => {
+      day.tasks.forEach(t => {
+        if (t.subject === k) {
+          total++;
+          if (checksState[t.id]) done++;
+        }
+      });
+    });
+    s[k] = done; s[k+'_total'] = total; s[k+'_pct'] = total ? Math.round(done/total*100) : 0;
+    s.total_done += done; s.total_all += total;
+  });
+  s.overall_pct = s.total_all ? Math.round(s.total_done/s.total_all*100) : 0;
+  return s;
+}
+
+function getLevel(pct) {
+  return LEVELS.find(l => pct >= l.min && pct <= l.max) || LEVELS[0];
+}
+
+function checkBadges(s) {
+  BADGES.forEach(b => {
+    if (!earnedBadges.has(b.id) && b.trigger(s.overall_pct, s)) {
+      earnedBadges.add(b.id);
+      showBadgeToast(b);
+    }
+  });
+}
+
+function showBadgeToast(b) {
+  const t = document.createElement('div');
+  t.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--ink);color:#fff;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,.3);animation:slideIn .4s ease;max-width:280px;`;
+  t.innerHTML = `<div style="font-size:32px">${b.icon}</div><div><div style="font-size:10px;color:var(--c4);font-weight:700;letter-spacing:1px">🏅 成就解鎖！</div><div style="font-size:14px;font-weight:800;margin-top:2px">${b.name}</div><div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:2px">${b.desc}</div></div>`;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .5s'; setTimeout(()=>t.remove(),500); }, 3500);
+}
+
+// ── Streak ──
+const STREAK_KEY = STORAGE_PREFIX + 'streak';
+const STREAK_LAST_KEY = STORAGE_PREFIX + 'streak_last';
+
+function updateStreak() {
+  const todayStr = getTodayStr();
+  const todayPlan = planConfig.dailyPlan.find(d => d.date === todayStr);
+  if (!todayPlan || todayPlan.tasks.length === 0) return;
+  const allDone = todayPlan.tasks.every(t => checksState[t.id]);
+  let streak = parseInt(localStorage.getItem(STREAK_KEY) || '0');
+  const lastDate = localStorage.getItem(STREAK_LAST_KEY) || '';
+  if (allDone && lastDate !== todayStr) {
+    const yesterday = new Date(todayStr);
+    yesterday.setDate(yesterday.getDate()-1);
+    const yStr = yesterday.toISOString().slice(0,10);
+    streak = (lastDate === yStr || lastDate === '') ? streak+1 : 1;
+    localStorage.setItem(STREAK_KEY, streak.toString());
+    localStorage.setItem(STREAK_LAST_KEY, todayStr);
+  }
+  return streak;
+}
+
+function renderGamePanel() {
+  const s = getStats();
+  const lv = getLevel(s.overall_pct);
+  const streak = updateStreak() || parseInt(localStorage.getItem(STREAK_KEY) || '0');
+  checkBadges(s);
+
+  const el = document.getElementById('game-panel');
+  if (!el) return;
+
+  el.innerHTML = `
+    <div style="background:var(--ink);border-radius:14px;padding:22px 20px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden;">
+      <div style="position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,${lv.color}22,transparent 60%);pointer-events:none"></div>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div style="font-size:52px;line-height:1">${lv.rank.split(' ')[0]}</div>
+        <div style="flex:1;min-width:180px;">
+          <div style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;margin-bottom:2px">目前等級</div>
+          <div style="font-size:22px;font-weight:900;color:${lv.color}">${lv.rank}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px">${lv.desc}</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:38px;font-weight:700;color:${lv.color};line-height:1">${s.overall_pct}<span style="font-size:16px">%</span></div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4)">總完成度</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px">
+          <span>經驗值 ${s.total_done} / ${s.total_all} 任務</span><span>${s.overall_pct}%</span>
+        </div>
+        <div style="height:10px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden;">
+          <div style="height:100%;width:${s.overall_pct}%;background:linear-gradient(90deg,${lv.color},${lv.color}cc);border-radius:5px;transition:width .5s"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:16px;flex-wrap:wrap;">
+        <div style="flex:1;background:rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;font-size:12px;color:rgba(255,255,255,.9);display:flex;align-items:center;gap:6px;">
+          ${streak>=14?'🏆':streak>=7?'🔥':streak>=3?'⚡':'✨'} 連續打卡 <strong style="font-family:'Space Grotesk',sans-serif;font-size:20px;color:var(--c4)">${streak}</strong> 天
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;">
+        ${Object.entries(SUBJECT_META).map(([k,m]) => `
+          <div style="flex:1;min-width:70px;text-align:center;">
+            <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:4px">${m.icon}${m.name}</div>
+            <div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">
+              <div style="height:100%;width:${s[k+'_pct']}%;background:${m.color};border-radius:3px;transition:width .4s"></div>
+            </div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;color:${m.color};margin-top:3px">${s[k+'_pct']}%</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div style="font-size:13px;font-weight:800;margin-bottom:12px;">🏅 成就徽章</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:20px;">
+      ${BADGES.map(b => {
+        const earned = earnedBadges.has(b.id);
+        return `<div style="background:${earned?'var(--card)':'#f3f4f6'};border:2px solid ${earned?'var(--c4)':'var(--border)'};border-radius:10px;padding:12px;text-align:center;opacity:${earned?1:.45};">
+          <div style="font-size:26px;margin-bottom:4px">${earned?b.icon:'🔒'}</div>
+          <div style="font-size:11px;font-weight:700;color:${earned?'var(--ink)':'var(--muted)'}">${b.name}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">${b.desc}</div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div style="font-size:13px;font-weight:800;margin-bottom:12px;">🗺️ 闖關進度地圖</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+      ${LEVELS.map((l,i) => {
+        const done = s.overall_pct >= l.min;
+        const current = s.overall_pct >= l.min && s.overall_pct <= l.max;
+        return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;${current?'transform:scale(1.15)':''}">
+          <div style="width:42px;height:42px;border-radius:50%;background:${done?l.color:'#e5e7eb'};display:flex;align-items:center;justify-content:center;font-size:18px;border:3px solid ${current?l.color:'transparent'};box-shadow:${current?'0 0 12px '+l.color+'88':'none'};">${done?l.rank.split(' ')[0]:'⬜'}</div>
+          <div style="font-size:8px;color:${done?'var(--ink)':'var(--muted)'};text-align:center;">${l.min}%</div>
+        </div>
+        ${i<LEVELS.length-1?'<div style="flex:1;min-width:8px;height:3px;background:'+(s.overall_pct>l.max?l.color:'#e5e7eb')+';border-radius:2px;margin-bottom:14px"></div>':''}`;
+      }).join('')}
+    </div>
+  `;
+
+  renderTodayCard();
+}
+
+function renderTodayCard() {
+  const el = document.getElementById('today-card');
+  if (!el) return;
+  const todayStr = getTodayStr();
+  const day = planConfig.dailyPlan.find(d => d.date === todayStr);
+
+  if (!day) {
+    el.innerHTML = `<div style="background:var(--card);border-radius:12px;padding:16px 18px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);text-align:center;color:var(--muted);font-size:12px;">📅 今天不在計畫範圍內</div>`;
+    return;
+  }
+
+  const doneCount = day.tasks.filter(t => checksState[t.id]).length;
+  const itemsHtml = day.tasks.map(t => {
+    const checked = checksState[t.id];
+    return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px;">
+      <span style="color:${checked?'var(--c3)':'var(--muted)'}">${checked?'✓':'○'}</span>
+      <span style="${checked?'text-decoration:line-through;color:var(--muted);opacity:.6':''}">${SUBJECT_META[t.subject].icon}${t.content}</span>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div style="background:var(--ink);border-radius:12px;padding:16px 18px;margin-bottom:18px;color:#fff;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-size:13px;font-weight:800;">📍 今日待辦 — 週${day.dow} ${day.month}/${day.day}</div>
+        <div style="font-size:11px;color:var(--c4);font-weight:700;">${doneCount}/${day.tasks.length} 完成</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;">
+        ${itemsHtml || '<div style="font-size:12px;color:rgba(255,255,255,.5)">今天是休息日 🎉</div>'}
+      </div>
+    </div>`;
+}
+
+
+// ═══════════════════════════════════════════════════════
+// 家長確認面板
+// ═══════════════════════════════════════════════════════
+const PARENT_CHECKS = [
+  { key:'done',    label:'✅ 每日任務完成' },
+  { key:'quality', label:'📖 學習品質良好' },
+  { key:'attitude',label:'😊 態度積極認真' },
+];
+
+function getParentWeeks() {
+  // group planConfig.dailyPlan into weeks (Sun-Sat)
+  const weeks = [];
+  let curWeek = [];
+  planConfig.dailyPlan.forEach((day, i) => {
+    curWeek.push(day);
+    const dateObj = new Date(day.date+'T00:00:00');
+    if (dateObj.getDay() === 6 || i === planConfig.dailyPlan.length-1) {
+      weeks.push({
+        id: 'pw_' + curWeek[0].date.replace(/-/g,''),
+        label: `第${weeks.length+1}週`,
+        dates: `${curWeek[0].month}/${curWeek[0].day}–${curWeek[curWeek.length-1].month}/${curWeek[curWeek.length-1].day}`,
+        start: curWeek[0].date,
+        end: curWeek[curWeek.length-1].date,
+        days: curWeek,
+      });
+      curWeek = [];
+    }
+  });
+  return weeks;
+}
+
+function calcWeekTaskRate(week) {
+  let total = 0, done = 0;
+  week.days.forEach(day => {
+    day.tasks.forEach(t => {
+      total++;
+      if (checksState[t.id]) done++;
+    });
+  });
+  return { total, done, pct: total ? Math.round(done/total*100) : null };
+}
+
+function hasOverdueTasks(week) {
+  const todayStr = getTodayStr();
+  let overdue = false;
+  week.days.forEach(day => {
+    if (day.date < todayStr) {
+      day.tasks.forEach(t => { if (!checksState[t.id]) overdue = true; });
+    }
+  });
+  return overdue;
+}
+
+function getWeakSubjects() {
+  const s = getStats();
+  const rates = Object.entries(SUBJECT_META).map(([k,m]) => ({
+    key:k, name:m.name, icon:m.icon, pct: s[k+'_pct'], total: s[k+'_total'],
+  })).filter(r => r.total > 0);
+  rates.sort((a,b) => a.pct - b.pct);
+  return rates;
+}
+
+function renderParentPanel() {
+  const grid = document.getElementById('parent-grid');
+  if (!grid || planConfig.dailyPlan.length === 0) return;
+
+  const todayStr = getTodayStr();
+  const weeks = getParentWeeks();
+  const currentWeek = weeks.find(w => todayStr >= w.start && todayStr <= w.end);
+
+  const summaryHtml = currentWeek ? (() => {
+    const r = calcWeekTaskRate(currentWeek);
+    const overdue = hasOverdueTasks(currentWeek);
+    const allConfirmed = PARENT_CHECKS.every(c => checksState[`${currentWeek.id}_${c.key}`]);
+    return `
+    <div style="background:var(--ink);border-radius:12px;padding:16px 18px;margin-bottom:18px;color:#fff;">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px;">📊 本週狀況（${currentWeek.label} ${currentWeek.dates}）</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;">
+        <div style="flex:1;min-width:80px;background:rgba(255,255,255,.08);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:${r.pct>=80?'var(--c3)':r.pct>=50?'var(--c4)':'var(--c1)'};">${r.pct!==null?r.pct+'%':'–'}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:2px;">任務完成率</div>
+        </div>
+        <div style="flex:1;min-width:80px;background:rgba(255,255,255,.08);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:var(--c4);">${r.done}<span style="font-size:14px;color:rgba(255,255,255,.4)">/${r.total}</span></div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:2px;">完成 / 總任務</div>
+        </div>
+        <div style="flex:1;min-width:80px;background:rgba(255,255,255,.08);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:20px;">${allConfirmed?'✅':'⏳'}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;">${allConfirmed?'家長已確認':'待家長確認'}</div>
+        </div>
+      </div>
+      ${overdue?`<div style="background:#e6394622;border:1px solid #e6394644;border-radius:8px;padding:8px 12px;font-size:11px;color:#fca5a5;">⚠️ 本週有逾期未完成的任務，請提醒補上！</div>`:''}
+    </div>`;
+  })() : '';
+
+  const weak = getWeakSubjects();
+  const weakHtml = weak.length >= 2 ? `
+    <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+      <div style="font-size:13px;font-weight:800;margin-bottom:12px;">🔍 弱點科目分析</div>
+      ${weak.map((s,i) => `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="font-size:13px;width:20px;">${s.icon}</div>
+          <div style="width:32px;font-size:11px;color:var(--muted);">${s.name}</div>
+          <div style="flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden;">
+            <div style="height:100%;width:${s.pct}%;background:${s.pct<40?'var(--c1)':s.pct<70?'var(--c4)':'var(--c3)'};border-radius:4px;"></div>
+          </div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;width:36px;text-align:right;color:${s.pct<40?'var(--c1)':s.pct<70?'var(--c6)':'var(--c3)'};">${s.pct}%</div>
+        </div>`).join('')}
+      <div style="margin-top:10px;padding:8px 12px;background:#eff6ff;border-radius:8px;font-size:11px;color:#1e40af;">
+        💡 建議重點加強：<strong>${weak[0].icon}${weak[0].name}</strong>（${weak[0].pct}%）
+      </div>
+    </div>` : '';
+
+  const weeksHtml = weeks.map(w => {
+    const checksHtml = PARENT_CHECKS.map(c => {
+      const cbId = `${w.id}_${c.key}`;
+      const checked = checksState[cbId] ? 'checked' : '';
+      return `
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <input type="checkbox" id="${cbId}" ${checked} onchange="saveParentCB('${cbId}',this.checked)" style="display:none;">
+          <label for="${cbId}" style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;" onclick="event.preventDefault();toggleParentCB('${cbId}')">
+            <span class="pcb-box-${cbId}" style="width:16px;height:16px;border:2px solid ${checked?'var(--c3)':'#d1d5db'};background:${checked?'var(--c3)':'#fff'};border-radius:3px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:10px;font-weight:900;">${checked?'✓':''}</span>
+            ${c.label}
+          </label>
+        </div>`;
+    }).join('');
+
+    const noteId = `${w.id}_note`;
+    const noteVal = (checksState[noteId] || '').replace(/"/g,'&quot;');
+    const allChecked = PARENT_CHECKS.every(c => checksState[`${w.id}_${c.key}`]);
+    const wr = calcWeekTaskRate(w);
+    const isPast = todayStr > w.end;
+    const isCurrentWk = todayStr >= w.start && todayStr <= w.end;
+    const overdueWarn = isPast && !allChecked;
+    const borderColor = allChecked ? 'var(--c3)' : overdueWarn ? 'var(--c1)' : isCurrentWk ? 'var(--c4)' : 'var(--border)';
+
+    return `
+    <div style="background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid ${borderColor};">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
+        <div>
+          <div style="font-size:14px;font-weight:800;">${isCurrentWk?'⭐ ':''}${w.label} <span style="color:var(--muted);font-weight:400;font-size:12px;">${w.dates}</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          ${wr.pct !== null ? `<div style="font-size:10px;font-weight:700;color:${wr.pct>=80?'var(--c3)':wr.pct>=50?'var(--c6)':'var(--c1)'};background:${wr.pct>=80?'#ecfdf5':wr.pct>=50?'#fff7ed':'#fff1f2'};padding:2px 8px;border-radius:10px;">${wr.pct}% 完成</div>` : ''}
+          ${overdueWarn ? '<div style="font-size:10px;font-weight:700;color:var(--c1);background:#fff1f2;padding:2px 8px;border-radius:10px;">⚠️ 逾期</div>' : ''}
+          ${allChecked ? '<div style="font-size:10px;font-weight:700;color:var(--c3);background:#ecfdf5;padding:2px 8px;border-radius:10px;">✓ 已確認</div>' : '<div style="font-size:10px;color:var(--muted);">待確認</div>'}
+        </div>
+      </div>
+      ${checksHtml}
+      <div style="margin-top:10px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">💬 家長留言</div>
+        <textarea id="${noteId}" style="width:100%;height:52px;font-size:12px;border:1px solid var(--border);border-radius:6px;padding:6px;resize:none;font-family:inherit;" placeholder="本週觀察、鼓勵或提醒…" onchange="saveParentNote('${noteId}',this.value)">${noteVal}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+
+  grid.innerHTML = summaryHtml + weakHtml + weeksHtml;
+}
+
+window.toggleParentCB = function(id) {
+  const el = document.getElementById(id);
+  el.checked = !el.checked;
+  saveParentCB(id, el.checked);
+};
+
+window.saveParentCB = function(id, checked) {
+  checksState[id] = checked;
+  saveChecks();
+  renderParentPanel();
+  renderGamePanel();
+};
+
+window.saveParentNote = function(id, val) {
+  checksState[id] = val;
+  saveChecks();
+};
+
+
+// ═══════════════════════════════════════════════════════
+// 儲存與同步
+// ═══════════════════════════════════════════════════════
+function saveConfig() {
+  try { localStorage.setItem(CONFIG_KEY, JSON.stringify(planConfig)); } catch(e) {}
+  if (firebaseReady) {
+    try { db.ref('semesterPlan/config').set({ data: planConfig, ts: Date.now() }); } catch(e) { console.warn(e); }
+  }
+}
+
+function saveChecks() {
+  try { localStorage.setItem(CHECKS_KEY, JSON.stringify(checksState)); } catch(e) {}
+  if (firebaseReady) {
+    try { db.ref('semesterPlan/checks').set({ data: checksState, ts: Date.now() }); } catch(e) { console.warn(e); }
+  }
+}
+
+function loadFromLocal() {
+  try {
+    const c = localStorage.getItem(CONFIG_KEY);
+    if (c) planConfig = JSON.parse(c);
+    const k = localStorage.getItem(CHECKS_KEY);
+    if (k) checksState = JSON.parse(k);
+  } catch(e) {}
+}
+
+function initFirebaseSync() {
+  if (!firebaseReady) {
+    console.info('Firebase 未連線，僅使用本機儲存模式');
+    return;
+  }
+  db.ref('semesterPlan/config').on('value', snap => {
+    const val = snap.val();
+    if (val && val.data && val.data.dailyPlan) {
+      planConfig = val.data;
+      if (planConfig.dailyPlan.length > 0) {
+        ['tab-plan','tab-game','tab-parent'].forEach(id => document.getElementById(id).classList.remove('disabled'));
+        renderPlanPanel();
+        renderGamePanel();
+        renderParentPanel();
+      }
+    }
+  });
+  db.ref('semesterPlan/checks').on('value', snap => {
+    const val = snap.val();
+    if (val && val.data) {
+      checksState = val.data;
+      renderPlanPanel();
+      renderGamePanel();
+      renderParentPanel();
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// TAB 切換
+// ═══════════════════════════════════════════════════════
+window.showPanel = function(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (el) el.classList.add('active');
+};
+
+// ═══════════════════════════════════════════════════════
+// CSS 動畫注入
+// ═══════════════════════════════════════════════════════
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideIn { from{transform:translateX(120px);opacity:0} to{transform:translateX(0);opacity:1} }
+  @keyframes floatUp { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(-30px);opacity:0} }
+`;
+document.head.appendChild(style);
+
+// ═══════════════════════════════════════════════════════
+// 初始化
+// ═══════════════════════════════════════════════════════
+loadFromLocal();
+renderLessonList();
+
+if (planConfig.dailyPlan && planConfig.dailyPlan.length > 0) {
+  ['tab-plan','tab-game','tab-parent'].forEach(id => document.getElementById(id).classList.remove('disabled'));
+  // restore form fields
+  if (document.getElementById('plan-name')) document.getElementById('plan-name').value = planConfig.name || '';
+  if (document.getElementById('plan-start')) document.getElementById('plan-start').value = planConfig.start || '';
+  if (document.getElementById('plan-end')) document.getElementById('plan-end').value = planConfig.end || '';
+  renderPlanPanel();
+  renderGamePanel();
+  renderParentPanel();
+  showPanel('plan', document.querySelector('.tab[onclick*="plan"]'));
+}
+
+initFirebaseSync();
+
+})(); // end IIFE
+</script>
+</body>
+</html>
